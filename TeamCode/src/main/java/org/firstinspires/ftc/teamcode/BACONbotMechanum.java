@@ -29,41 +29,41 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 /**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * This OpMode provides teleop control using the left and right game controller joysticks to
- * drive a four motor four wheel holonomic robot.  The left joystick controls the direction
- * and speed of the movement.  The right joystick controls the rotation around the z axis.
- * <p>
- * The OpMode utilizes the BACONbot hardware definition defined in HardwareBACONbot
- * <p>
- * The code is based on lesson from Cody
- * https://www.youtube.com/watch?v=Pz17vCHaDIY
- * https://www.youtube.com/watch?v=20M62Xil5s4
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
  *
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all linear OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mechanum2", group="BACONbot")
+@TeleOp(name="BACON: Mechanum", group="Opmode")
 //@Disabled
-public class BACONBotMechanum extends OpMode
-{
+public class BACONbotMechanum extends LinearOpMode {
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     HardwareBACONbot robot = new HardwareBACONbot();   // Use a BACONbot's hardware
 
-
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
     @Override
-    public void init() {
+    public void runOpMode() {
         telemetry.addData("Status", "Initializing");
-
-
+        telemetry.update();
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -72,90 +72,83 @@ public class BACONBotMechanum extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-    }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
-    @Override
-    public void init_loop() {
-    }
-
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
-    @Override
-    public void start() {
+        // Wait for the game to start (driver presses PLAY)
+        waitForStart();
         runtime.reset();
-    }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-    @Override
-    public void loop() {
-        // In this mode the Left stick moves the robot in the direction pointed to by x,y
-        //              the Right stick x controls rotation; right (positive) rotates clockwise
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
 
-        double x;
-        double y;
-        double r;
-        double frontLeft;
-        double frontRight;
-        double backLeft;
-        double backRight;
-        double max;
+            // In this mode the Left stick moves the robot in the direction pointed to by x,y
+            //              the Right stick x controls rotation; right (positive) rotates clockwise
 
-        // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
-        // Get the x value of the right joystick.
+            double x;
+            double y;
+            double r;
+            double frontLeft;
+            double frontRight;
+            double backLeft;
+            double backRight;
+            double max;
+
+            // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
+            // Get the x value of the right joystick.
 
 
 
-        y = gamepad1.left_stick_y;
-        x = gamepad1.left_stick_x;
-        r = gamepad1.right_stick_x;
+            y = gamepad1.left_stick_y;
+            x = gamepad1.left_stick_x;
+            r = gamepad1.right_stick_x;
 
-        // do not let rotation dominate movement
-        r = r / 4;
+            // do not let rotation dominate movement
+            r = r / 4;
 
-        // calculate the power for each wheel
+            // calculate the power for each wheel
 
-        frontLeft = +y - x + r;
-        backLeft = +y + x + r;
+            frontLeft = +y - x + r;
+            backLeft = +y + x + r;
 
-        frontRight = -y - x + r;
-        backRight = -y + x + r;
+            frontRight = -y - x + r;
+            backRight = -y + x + r;
 
-        // Normalize the values so none exceeds +/- 1.0
-        max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
-        if (max > 1.0) {
-            frontLeft = frontLeft / max;
-            frontRight = frontRight / max;
-            backLeft = backLeft / max;
-            backRight = backRight / max;
+            // Normalize the values so none exceeds +/- 1.0
+            max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
+            if (max > 1.0) {
+                frontLeft = frontLeft / max;
+                frontRight = frontRight / max;
+                backLeft = backLeft / max;
+                backRight = backRight / max;
+            }
+
+            // Set power on each wheel
+            robot.frontLeftMotor.setPower(frontLeft);
+            robot.frontRightMotor.setPower(frontRight);
+            robot.backLeftMotor.setPower(backLeft);
+            robot.backRightMotor.setPower(backRight);
+
+
+            // Show wheel power to driver
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("front left", "%.2f", frontLeft);
+            telemetry.addData("front right", "%.2f", frontRight);
+            telemetry.addData("back left", "%.2f", backLeft);
+            telemetry.addData("back right", "%.2f", backRight);
+            telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
+            telemetry.update();
+
+            if (gamepad1.a)  {
+                while (robot.backDistance.getDistance(DistanceUnit.MM) < 790) {
+                    robot.frontLeftMotor.setPower(-0.5);
+                    robot.frontRightMotor.setPower(0.5);
+                    robot.backLeftMotor.setPower(-0.5);
+                    robot.backRightMotor.setPower(0.5);
+                }
+                robot.frontLeftMotor.setPower(0);
+                robot.frontRightMotor.setPower(0);
+                robot.backLeftMotor.setPower(0);
+                robot.backRightMotor.setPower(0);
+                }
         }
-
-        // Set power on each wheel
-        robot.frontLeftMotor.setPower(frontLeft);
-        robot.frontRightMotor.setPower(frontRight);
-        robot.backLeftMotor.setPower(backLeft);
-        robot.backRightMotor.setPower(backRight);
-
-
-        // Show wheel power to driver
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("front left", "%.2f", frontLeft);
-        telemetry.addData("front right", "%.2f", frontRight);
-        telemetry.addData("back left", "%.2f", backLeft);
-        telemetry.addData("back right", "%.2f", backRight);
-        telemetry.update();
     }
-
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
-    @Override
-    public void stop() {
-    }
-
 }
