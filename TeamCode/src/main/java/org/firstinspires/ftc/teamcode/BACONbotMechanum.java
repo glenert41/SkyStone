@@ -138,8 +138,8 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.update();
 
 
-            double atMat = 0;
 
+            //BUILD SIDE AUTO - IN PROGRESS ----------
             if (gamepad1.a)  {
                 while (robot.backDistance.getDistance(DistanceUnit.MM) < 790) {
                     driveBackwards();
@@ -160,6 +160,23 @@ public class BACONbotMechanum extends LinearOpMode {
                 //strafe left
                 strafeLeft();
             }
+            //----------------------
+
+            //Mat Servo
+            double open_Pos = 0;
+            double clamp_Pos = 1;
+            double matServoPosition;
+
+            if(gamepad1.left_bumper){
+
+                matServoPosition = clamp_Pos;
+            }
+            else{
+                matServoPosition = open_Pos;
+            }
+            robot.matServo.setPosition(matServoPosition);
+
+
         }
     }
 

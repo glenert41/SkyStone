@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+
 /**
  * This is NOT an opmode.
  *
@@ -55,7 +56,10 @@ public class HardwareBACONbot
     public DcMotor  frontRightMotor  = null;
     public DcMotor  backLeftMotor    = null;
     public DcMotor  backRightMotor   = null;
+
     public DistanceSensor  backDistance   = null;
+
+    public Servo matServo = null;
 
     /* local OpMode members. */
     private HardwareMap hwMap           =  null;
@@ -79,6 +83,7 @@ public class HardwareBACONbot
         backRightMotor  = hwMap.dcMotor.get("BR"); // H1 3
 
         backDistance = hwMap.get(DistanceSensor.class, "bsr");
+        matServo = hwMap.servo.get("MS");
 
         // BACONbot uses AndyMark NeverRest Motors
         // This code assumes that the motors turns counterclockwise,
@@ -96,6 +101,8 @@ public class HardwareBACONbot
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
+
+        matServo.setPosition(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
