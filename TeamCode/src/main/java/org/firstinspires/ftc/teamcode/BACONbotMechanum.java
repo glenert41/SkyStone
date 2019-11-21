@@ -146,20 +146,20 @@ public class BACONbotMechanum extends LinearOpMode {
                     robot.frontRightMotor.setPower(0.5);
                     robot.backLeftMotor.setPower(-0.5);
                     robot.backRightMotor.setPower(0.5);
-                    }
+                }
 
                 stopDriving();
 
                 while (robot.backDistance.getDistance(DistanceUnit.MM) >25){
-                        robot.frontLeftMotor.setPower(0.5);
-                        robot.frontRightMotor.setPower(-0.5);
-                        robot.backLeftMotor.setPower(0.5);
-                        robot.backRightMotor.setPower(-0.5);
-                    }
+                    robot.frontLeftMotor.setPower(0.5);
+                    robot.frontRightMotor.setPower(-0.5);
+                    robot.backLeftMotor.setPower(0.5);
+                    robot.backRightMotor.setPower(-0.5);
+                }
                 stopDriving();
 
 
-                }
+            }
 
 
             if (gamepad1.b) {
@@ -168,8 +168,8 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.backLeftMotor.setPower(-0.1);
                 robot.backRightMotor.setPower(-0.1);
             }
-                }
         }
+    }
 
 
     void stopDriving(){
@@ -179,6 +179,6 @@ public class BACONbotMechanum extends LinearOpMode {
         robot.backLeftMotor.setPower(0);
         robot.backRightMotor.setPower(0);
 
-        }
+    }
 }
 //graham home test
