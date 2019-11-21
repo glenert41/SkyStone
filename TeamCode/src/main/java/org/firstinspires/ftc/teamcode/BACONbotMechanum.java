@@ -139,7 +139,7 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
 
-            //BUILD SIDE AUTO - IN PROGRESS ----------
+            //BUILD SIDE AUTO - IN PROGRESS (Tuning)----------
             if (gamepad1.a)  {
                 while (robot.backDistance.getDistance(DistanceUnit.MM) < 790) {
                     driveBackwards();
