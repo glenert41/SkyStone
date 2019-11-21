@@ -161,7 +161,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 strafeLeft();
             }
             //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+/*
             //Mat Servo Tuning
             double open_Pos = 0;          //CHANGE LATER
             double clamp_Pos = 1;         //CHANGE LATER
@@ -175,7 +175,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 matServoPosition = open_Pos;
             }
             robot.matServo.setPosition(matServoPosition);
-
+*/
 
         }
     }
@@ -208,9 +208,9 @@ public class BACONbotMechanum extends LinearOpMode {
     }
 
     void strafeLeft(){
-        robot.frontLeftMotor.setPower(0.5);
-        robot.frontRightMotor.setPower(0.5);
-        robot.backLeftMotor.setPower(-0.5);
-        robot.backRightMotor.setPower(-0.5);
+        robot.frontLeftMotor.setPower(1);
+        robot.frontRightMotor.setPower(1);
+        robot.backLeftMotor.setPower(-1);
+        robot.backRightMotor.setPower(-1);
     }
 }

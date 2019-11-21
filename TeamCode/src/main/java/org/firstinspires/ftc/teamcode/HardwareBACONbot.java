@@ -59,7 +59,7 @@ public class HardwareBACONbot
 
     public DistanceSensor  backDistance   = null;
 
-    public Servo matServo = null;
+    //public Servo matServo = null;
 
     /* local OpMode members. */
     private HardwareMap hwMap           =  null;
@@ -83,7 +83,7 @@ public class HardwareBACONbot
         backRightMotor  = hwMap.dcMotor.get("BR"); // H1 3
 
         backDistance = hwMap.get(DistanceSensor.class, "bsr");
-        matServo = hwMap.servo.get("MS");
+       // matServo = hwMap.servo.get("MS");
 
         // BACONbot uses AndyMark NeverRest Motors
         // This code assumes that the motors turns counterclockwise,
@@ -102,7 +102,7 @@ public class HardwareBACONbot
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
 
-        matServo.setPosition(0);
+      //  matServo.setPosition(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
