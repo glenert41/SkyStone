@@ -156,15 +156,15 @@ public class BACONbotMechanum extends LinearOpMode {
             }
 
 
-            if (gamepad1.b) {
-                //strafe left
+            if (gamepad1.b) {     //When we press B, strafe towards the center of the tape - The Press B part will be changed later
+
                 strafeLeft();
             }
             //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
             //Mat Servo Tuning
-            double open_Pos = 0;
-            double clamp_Pos = 1;
+            double open_Pos = 0;          //CHANGE LATER
+            double clamp_Pos = 1;         //CHANGE LATER
             double matServoPosition;
 
             if(gamepad1.left_bumper){
