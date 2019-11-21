@@ -148,10 +148,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 stopDriving();
 
                 while (robot.backDistance.getDistance(DistanceUnit.MM) >25){
-                    robot.frontLeftMotor.setPower(0.5);
-                    robot.frontRightMotor.setPower(-0.5);
-                    robot.backLeftMotor.setPower(0.5);
-                    robot.backRightMotor.setPower(-0.5);
+                    driveForward();
                 }
                 stopDriving();
 
@@ -183,6 +180,14 @@ public class BACONbotMechanum extends LinearOpMode {
         robot.backLeftMotor.setPower(-0.5);
         robot.backRightMotor.setPower(0.5);
 
+    }
+
+
+    void driveForward(){
+        robot.frontLeftMotor.setPower(0.5);
+        robot.frontRightMotor.setPower(-0.5);
+        robot.backLeftMotor.setPower(0.5);
+        robot.backRightMotor.setPower(-0.5);
     }
 
     void strafeLeft(){
