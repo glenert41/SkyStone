@@ -162,7 +162,7 @@ public class BACONbotMechanum extends LinearOpMode {
             }
             //----------------------
 
-            //Mat Servo
+            //Mat Servo Tuning
             double open_Pos = 0;
             double clamp_Pos = 1;
             double matServoPosition;
