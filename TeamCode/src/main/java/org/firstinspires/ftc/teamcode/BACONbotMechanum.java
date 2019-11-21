@@ -138,16 +138,17 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.update();
 
 
+            double meetDistance = 790;
 
             //BUILD SIDE AUTO - IN PROGRESS (Tuning)----------
             if (gamepad1.a)  {
-                while (robot.backDistance.getDistance(DistanceUnit.MM) < 790) {
+                while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) {
                     driveBackwards();
                 }
 
                 stopDriving();
 
-                while (robot.backDistance.getDistance(DistanceUnit.MM) >25){
+                while (robot.backDistance.getDistance(DistanceUnit.MM) > 25){
                     driveForward();
                 }
                 stopDriving();
@@ -178,6 +179,17 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
         }
+
+
+        //Loading Zone Side Start
+
+
+
+
+
+
+
+
     }
 
 
