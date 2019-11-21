@@ -163,10 +163,8 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
             if (gamepad1.b) {
-                robot.frontLeftMotor.setPower(0.1);
-                robot.frontRightMotor.setPower(0.1);
-                robot.backLeftMotor.setPower(-0.1);
-                robot.backRightMotor.setPower(-0.1);
+                //strafe left
+                strafeLeft();
             }
         }
     }
@@ -179,6 +177,13 @@ public class BACONbotMechanum extends LinearOpMode {
         robot.backLeftMotor.setPower(0);
         robot.backRightMotor.setPower(0);
 
+
+    }
+
+    void strafeLeft(){
+        robot.frontLeftMotor.setPower(0.5);
+        robot.frontRightMotor.setPower(0.5);
+        robot.backLeftMotor.setPower(-0.5);
+        robot.backRightMotor.setPower(-0.5);
     }
 }
-//graham home test
