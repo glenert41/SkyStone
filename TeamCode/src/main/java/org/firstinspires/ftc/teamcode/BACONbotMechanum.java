@@ -77,6 +77,15 @@ public class BACONbotMechanum extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        double meetDistance = 790; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+
+
+
+
+
+
+
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -138,7 +147,7 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.update();
 
 
-            double meetDistance = 790;
+
 
             //BUILD SIDE AUTO - IN PROGRESS (Tuning)---------------------------------
             if (gamepad1.a)  {
@@ -181,8 +190,23 @@ public class BACONbotMechanum extends LinearOpMode {
         }
 
 
-        //Loading Zone Side Start
 
+
+
+
+
+        //Loading Zone Side Start -- Starting -- Mekhi and Alden
+
+        if(gamepad1.y){
+
+            while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) {
+                driveBackwards();
+            }
+
+            stopDriving();
+
+
+        }
 
 
 
@@ -193,6 +217,15 @@ public class BACONbotMechanum extends LinearOpMode {
     }
 
 
+
+
+
+    // Functions --------------------------------------
+
+
+    //Driving Functions
+
+    //Stop Driving - Kill power to all the motors
     void stopDriving(){
 
         robot.frontLeftMotor.setPower(0);
@@ -203,6 +236,7 @@ public class BACONbotMechanum extends LinearOpMode {
 
     }
 
+    //Drive Backwards - Used for starting the game
     void driveBackwards(){
         robot.frontLeftMotor.setPower(-0.5);
         robot.frontRightMotor.setPower(0.5);
@@ -211,7 +245,7 @@ public class BACONbotMechanum extends LinearOpMode {
 
     }
 
-
+    //Drive Forwards - Towards where the Backsensor is facing
     void driveForward(){
         robot.frontLeftMotor.setPower(0.5);
         robot.frontRightMotor.setPower(-0.5);
@@ -219,6 +253,7 @@ public class BACONbotMechanum extends LinearOpMode {
         robot.backRightMotor.setPower(-0.5);
     }
 
+    //Strafe Left - (used to strafe towards the center line for parking)
     void strafeLeft(){
         robot.frontLeftMotor.setPower(0.5);
         robot.frontRightMotor.setPower(0.5);
