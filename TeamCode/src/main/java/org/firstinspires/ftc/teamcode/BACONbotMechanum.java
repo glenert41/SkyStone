@@ -137,18 +137,47 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
             telemetry.update();
 
+
+            double atMat = 0;
+
             if (gamepad1.a)  {
                 while (robot.backDistance.getDistance(DistanceUnit.MM) < 790) {
                     robot.frontLeftMotor.setPower(-0.5);
                     robot.frontRightMotor.setPower(0.5);
                     robot.backLeftMotor.setPower(-0.5);
                     robot.backRightMotor.setPower(0.5);
+                    }
+
+                stopDriving();
+
+                while (robot.backDistance.getDistance(DistanceUnit.MM) >25){
+                        robot.frontLeftMotor.setPower(0.5);
+                        robot.frontRightMotor.setPower(-0.5);
+                        robot.backLeftMotor.setPower(0.5);
+                        robot.backRightMotor.setPower(-0.5);
+                    }
+                stopDriving();
+
+
                 }
-                robot.frontLeftMotor.setPower(0);
-                robot.frontRightMotor.setPower(0);
-                robot.backLeftMotor.setPower(0);
-                robot.backRightMotor.setPower(0);
+
+
+            if (gamepad1.b) {
+                robot.frontLeftMotor.setPower(0.1);
+                robot.frontRightMotor.setPower(0.1);
+                robot.backLeftMotor.setPower(-0.1);
+                robot.backRightMotor.setPower(-0.1);
+            }
                 }
         }
-    }
+
+
+    void stopDriving(){
+
+        robot.frontLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(0);
+        robot.backLeftMotor.setPower(0);
+        robot.backRightMotor.setPower(0);
+
+        }
 }

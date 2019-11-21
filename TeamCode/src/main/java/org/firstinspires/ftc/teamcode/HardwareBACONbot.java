@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -54,6 +55,7 @@ public class HardwareBACONbot
     public DcMotor  frontRightMotor  = null;
     public DcMotor  backLeftMotor    = null;
     public DcMotor  backRightMotor   = null;
+    public DistanceSensor  backDistance   = null;
 
     /* local OpMode members. */
     private HardwareMap hwMap           =  null;
@@ -71,10 +73,12 @@ public class HardwareBACONbot
 
         // Define and Initialize Motors
         // Define and Initialize Motors
-        frontLeftMotor  = hwMap.dcMotor.get("FL"); // 0 - motor port
-        frontRightMotor = hwMap.dcMotor.get("FR"); // 1
-        backLeftMotor   = hwMap.dcMotor.get("BL"); // 2
-        backRightMotor  = hwMap.dcMotor.get("BR"); // 3
+        frontLeftMotor  = hwMap.dcMotor.get("FL"); // H1 0 - motor port
+        frontRightMotor = hwMap.dcMotor.get("FR"); // H1 1
+        backLeftMotor   = hwMap.dcMotor.get("BL"); // H1 2
+        backRightMotor  = hwMap.dcMotor.get("BR"); // H1 3
+
+        backDistance = hwMap.get(DistanceSensor.class, "bsr");
 
         // BACONbot uses AndyMark NeverRest Motors
         // This code assumes that the motors turns counterclockwise,
