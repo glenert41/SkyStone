@@ -78,6 +78,7 @@ public class BACONbotMechanum extends LinearOpMode {
         runtime.reset();
 
         double meetDistance = 790; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+        double leftMeetDistance = 10;
 
 
 
@@ -204,6 +205,11 @@ public class BACONbotMechanum extends LinearOpMode {
             }
 
             stopDriving();
+
+
+            while (robot.leftDistance.getDistance(DistanceUnit.MM) < leftMeetDistance) {
+                strafeLeft();
+            }
 
             //PseudoCode
             /*

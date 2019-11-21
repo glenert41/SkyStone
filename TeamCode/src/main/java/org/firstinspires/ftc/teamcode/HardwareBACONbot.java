@@ -58,6 +58,7 @@ public class HardwareBACONbot
     public DcMotor  backRightMotor   = null;
 
     public DistanceSensor  backDistance   = null;
+    public DistanceSensor leftDistance = null;
 
     //public Servo matServo = null;
 
@@ -83,6 +84,7 @@ public class HardwareBACONbot
         backRightMotor  = hwMap.dcMotor.get("BR"); // H1 3
 
         backDistance = hwMap.get(DistanceSensor.class, "bsr");
+        leftDistance = hwMap.get(DistanceSensor.class, "lsr");
        // matServo = hwMap.servo.get("MS");
 
         // BACONbot uses AndyMark NeverRest Motors
