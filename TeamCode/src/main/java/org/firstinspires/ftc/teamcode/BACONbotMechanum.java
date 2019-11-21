@@ -205,6 +205,12 @@ public class BACONbotMechanum extends LinearOpMode {
 
             stopDriving();
 
+            //PseudoCode
+            /*
+            While the distance (using a new sensor) is greater than a certain distance, drive to the left.
+            There is a function strafeLeft();
+             */
+
 
         }
 
