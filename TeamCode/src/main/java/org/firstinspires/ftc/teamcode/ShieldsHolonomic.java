@@ -55,6 +55,7 @@ public class ShieldsHolonomic extends LinearOpMode {
         double x;
         double y;
         double r;
+        double rot = 45;
         double frontLeft;
         double frontRight;
         double backLeft;
@@ -82,8 +83,8 @@ public class ShieldsHolonomic extends LinearOpMode {
             // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
             // Left joystick sets heading
             // Right joystick sets rotation
-            y = -gamepad1.left_stick_y;
-            x = gamepad1.left_stick_x;
+            y = -gamepad1.left_stick_x*Math.cos(Math.toRadians(rot))-gamepad1.left_stick_y*Math.sin(Math.toRadians(rot));
+            x = gamepad1.left_stick_x*Math.cos(Math.toRadians(rot))-gamepad1.left_stick_y*Math.sin(Math.toRadians(rot));
             r = gamepad1.right_stick_x;
             // do not let rotation dominate movement
             r = r / 4;
