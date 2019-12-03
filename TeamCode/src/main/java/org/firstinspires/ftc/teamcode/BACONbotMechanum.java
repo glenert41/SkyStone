@@ -37,7 +37,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
+
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -80,6 +83,9 @@ public class BACONbotMechanum extends LinearOpMode {
 
         double meetDistance = 790; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double leftMeetDistance = 10;
+
+        double grabPos = 0;  //change these later (written 12-3-19)
+        double freePos = 1;  //change these later  (written 12-3-19)
 
 
 
@@ -167,17 +173,51 @@ public class BACONbotMechanum extends LinearOpMode {
                 // TODO: replace hardwareMap with robot after adding color sensor to hardwareMap
                 ColorSensor sensorColorRangeAsREVColorRangeSensor;
                 sensorColorRangeAsREVColorRangeSensor = hardwareMap.colorSensor.get("sensorColorRangeAsREVColorRangeSensor");
+
+                ColorSensor bottomColorSensor;
+                bottomColorSensor = hardwareMap.colorSensor.get("bCS");
+
+
                 if(ColorBot.isBlack(sensorColorRangeAsREVColorRangeSensor)) {
                     telemetry.addData("Object is Black",sensorColorRangeAsREVColorRangeSensor.red());
-                    //robot.clawServo.setPosition(1);
+
+                    //Detects the Skystone
+
+                    while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance+20) {
+                        driveBackwards();
+                    }
+
+                    stopDriving();
+                    robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
+
+                    while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance-20){
+                        driveForward();
+                    }
+
+                    //make the isNothing in the ColorBot thing
+                    while(ColorBot.isNOTHING(bottomColorSensor)) {
+                    strafeLeft(3);
+
+                    }
+                    stopDriving();
+                    outAndBack();
+
+
+
                 }
 
                 else if (ColorBot.isYellow(sensorColorRangeAsREVColorRangeSensor)) {
                     telemetry.addData("Object is Yellow",sensorColorRangeAsREVColorRangeSensor.red());
+
+                    robot.clawServo.setPosition(freePos);
+
                 }
                 else
                 {
                     telemetry.addData("Object is neither Black nor Yellow",sensorColorRangeAsREVColorRangeSensor.red());
+
+                    robot.clawServo.setPosition(freePos);
+
                 }
                 //**This next part is commented out for the moment, but we might want to add it back in (but it works without it)
               /* while (robot.backDistance.getDistance(DistanceUnit.MM) > 25){
@@ -313,5 +353,22 @@ public class BACONbotMechanum extends LinearOpMode {
         robot.frontRightMotor.setPower(pwr);
         robot.backLeftMotor.setPower(-pwr);
 
+    }
+
+    void strafeRight(double pwr){  //added int pwr to reduce initial power
+        robot.frontLeftMotor.setPower(-pwr);
+        robot.backRightMotor.setPower(pwr); //Changing the order in which the wheels start
+        robot.frontRightMotor.setPower(-pwr);
+        robot.backLeftMotor.setPower(pwr);
+
+    }
+
+    void outAndBack(){
+        strafeLeft(3);
+        //TimeUnit.SECONDS.sleep(1);
+        stopDriving();
+        robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
+        stopDriving();
+        strafeRight(3);
     }
 }

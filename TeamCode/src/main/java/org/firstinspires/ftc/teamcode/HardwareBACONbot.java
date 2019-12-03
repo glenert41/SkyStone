@@ -60,6 +60,8 @@ public class HardwareBACONbot
     public DistanceSensor  backDistance   = null;
     public DistanceSensor leftDistance = null;
     public DistanceSensor colorSensor = null; //Adding in a color sensor for the blocks
+    public Servo    clawServo = null;
+
 
 
 
@@ -90,6 +92,7 @@ public class HardwareBACONbot
         leftDistance = hwMap.get(DistanceSensor.class, "lsr");
 
         colorSensor = hwMap.get(DistanceSensor.class, "sensorColorRangeAsREVColorRangeSensor");
+        clawServo = hwMap.dcMotor.get("claw"); //H1P0
 
 
 
@@ -111,7 +114,7 @@ public class HardwareBACONbot
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
-
+        clawServo.setPosition(0);
       //  matServo.setPosition(0);
 
         // Set all motors to run without encoders.
