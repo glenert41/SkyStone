@@ -59,6 +59,9 @@ public class HardwareBACONbot
 
     public DistanceSensor  backDistance   = null;
     public DistanceSensor leftDistance = null;
+    public DistanceSensor colorSensor = null; //Adding in a color sensor for the blocks
+
+
 
     //public Servo matServo = null;
 
@@ -85,6 +88,11 @@ public class HardwareBACONbot
 
         backDistance = hwMap.get(DistanceSensor.class, "bsr");
         leftDistance = hwMap.get(DistanceSensor.class, "lsr");
+
+        colorSensor = hwMap.get(DistanceSensor.class, "sensorColorRangeAsREVColorRangeSensor");
+
+
+
        // matServo = hwMap.servo.get("MS");
 
         // BACONbot uses AndyMark NeverRest Motors

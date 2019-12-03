@@ -35,6 +35,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -145,31 +146,70 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.addData("back left", "%.2f", backLeft);
             telemetry.addData("back right", "%.2f", backRight);
             telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
+            telemetry.addData("left distance--", String.format("%.01f mm", robot.leftDistance.getDistance(DistanceUnit.MM))); //Added this one
+            telemetry.addData("colorSensor--", String.format("%.01f mm", robot.colorSensor.getDistance(DistanceUnit.MM))); //Added this one
+
+
             telemetry.update();
 
 
 
-
+//550
             //BUILD SIDE AUTO - IN PROGRESS (Tuning)---------------------------------
-            if (gamepad1.a)  {
-                while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) {
+            if (gamepad1.x) {  //We changed it from an a to an x so that it would start every time we pressed start+a to initialize the controller
+                while (robot.backDistance.getDistance(DistanceUnit.MM) < 550) { //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
                     driveBackwards();
                 }
 
                 stopDriving();
 
-                while (robot.backDistance.getDistance(DistanceUnit.MM) > 25){
-                    driveForward();
+                /* Sample code for taking yellow/black readings */
+                // TODO: replace hardwareMap with robot after adding color sensor to hardwareMap
+                ColorSensor sensorColorRangeAsREVColorRangeSensor;
+                sensorColorRangeAsREVColorRangeSensor = hardwareMap.colorSensor.get("sensorColorRangeAsREVColorRangeSensor");
+                if(ColorBot.isBlack(sensorColorRangeAsREVColorRangeSensor)) {
+                    telemetry.addData("Object is Black",sensorColorRangeAsREVColorRangeSensor.red());
+                    //robot.clawServo.setPosition(1);
+                }
+
+                else if (ColorBot.isYellow(sensorColorRangeAsREVColorRangeSensor)) {
+                    telemetry.addData("Object is Yellow",sensorColorRangeAsREVColorRangeSensor.red());
+                }
+                else
+                {
+                    telemetry.addData("Object is neither Black nor Yellow",sensorColorRangeAsREVColorRangeSensor.red());
+                }
+                //**This next part is commented out for the moment, but we might want to add it back in (but it works without it)
+              /* while (robot.backDistance.getDistance(DistanceUnit.MM) > 25){
+                   driveForward();
+               }
+               stopDriving();
+           }  */
+                telemetry.update();
+                while ((robot.leftDistance.getDistance(DistanceUnit.MM) > 40)&&(ColorBot.isYellow(sensorColorRangeAsREVColorRangeSensor))) {
+                    strafeLeft(.3);
+
+
                 }
                 stopDriving();
-
-
             }
 
 
-            if (gamepad1.b) {     //When we press B, strafe towards the center of the tape - The Press B part will be changed later
 
-                strafeLeft();
+
+
+
+
+
+
+
+
+
+
+
+        if (gamepad1.b) {     //When we press B, strafe towards the center of the tape - The Press B part will be changed later
+
+                strafeLeft(.3);
             }
             //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 /*
@@ -198,7 +238,7 @@ public class BACONbotMechanum extends LinearOpMode {
 
         //Loading Zone Side Start -- Starting -- Mekhi and Alden
 
-        if(gamepad1.y){
+        if(gamepad1.y) {
 
             while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) {
                 driveBackwards();
@@ -208,7 +248,7 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
             while (robot.leftDistance.getDistance(DistanceUnit.MM) < leftMeetDistance) {
-                strafeLeft();
+                strafeLeft(.3);
             }
 
             //PseudoCode
@@ -217,8 +257,9 @@ public class BACONbotMechanum extends LinearOpMode {
             There is a function strafeLeft();
              */
 
-
         }
+
+
 
 
 
@@ -266,10 +307,11 @@ public class BACONbotMechanum extends LinearOpMode {
     }
 
     //Strafe Left - (used to strafe towards the center line for parking)
-    void strafeLeft(){
-        robot.frontLeftMotor.setPower(1);
-        robot.frontRightMotor.setPower(1);
-        robot.backLeftMotor.setPower(-1);
-        robot.backRightMotor.setPower(-1);
+    void strafeLeft(double pwr){  //added int pwr to reduce initial power
+        robot.frontLeftMotor.setPower(pwr);
+        robot.backRightMotor.setPower(-pwr); //Changing the order in which the wheels start
+        robot.frontRightMotor.setPower(pwr);
+        robot.backLeftMotor.setPower(-pwr);
+
     }
 }
