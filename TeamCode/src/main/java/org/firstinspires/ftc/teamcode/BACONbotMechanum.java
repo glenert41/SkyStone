@@ -153,7 +153,7 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.addData("back right", "%.2f", backRight);
             telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
             telemetry.addData("left distance--", String.format("%.01f mm", robot.leftDistance.getDistance(DistanceUnit.MM))); //Added this one
-            telemetry.addData("colorSensor--", String.format("%.01f mm", robot.colorSensor.getDistance(DistanceUnit.MM))); //Added this one
+            telemetry.addData("colorSensor--", String.format("%.01f mm", robot.distanceSensorL.getDistance(DistanceUnit.MM))); //Added this one
 
 
             telemetry.update();
@@ -195,10 +195,14 @@ public class BACONbotMechanum extends LinearOpMode {
                     }
 
                     //make the isNothing in the ColorBot thing
-                    while(ColorBot.isNOTHING(bottomColorSensor)) {
+/******
+
+while(ColorBot.isNOTHING(bottomColorSensor)) {
                     strafeLeft(3);
 
                     }
+*****/
+
                     stopDriving();
                     outAndBack();
 
@@ -231,6 +235,7 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
                 }
+
                 stopDriving();
             }
 

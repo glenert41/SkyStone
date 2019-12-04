@@ -29,11 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 
 
 /**
@@ -59,7 +61,11 @@ public class HardwareBACONbot
 
     public DistanceSensor  backDistance   = null;
     public DistanceSensor leftDistance = null;
-    public DistanceSensor colorSensor = null; //Adding in a color sensor for the blocks
+    public DistanceSensor rightDistance = null;
+    public ColorSensor colorSensorL = null; //Adding in a color sensor for the blocks
+    public ColorSensor colorSensorR = null; //Adding in a color sensor for the blocks
+    public DistanceSensor distanceSensorL = null;
+    public DistanceSensor distanceSensorR = null;
     public Servo    clawServo = null;
 
 
@@ -90,9 +96,11 @@ public class HardwareBACONbot
 
         backDistance = hwMap.get(DistanceSensor.class, "bsr");
         leftDistance = hwMap.get(DistanceSensor.class, "lsr");
+        rightDistance = hwMap.get(DistanceSensor.class, "rsr");
 
-        colorSensor = hwMap.get(DistanceSensor.class, "sensorColorRangeAsREVColorRangeSensor");
-        clawServo = hwMap.dcMotor.get("claw"); //H1P0
+        colorSensorL = hwMap.get(ColorSensor.class, "colL");  //hub1 port 1
+        colorSensorR = hwMap.get(ColorSensor.class, "colR"); //hub1 port 2
+        clawServo = hwMap.servo.get("claw"); //H1P0
 
 
 
@@ -127,5 +135,15 @@ public class HardwareBACONbot
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+
+
+
+
+
+
+
+
+
  }
 
