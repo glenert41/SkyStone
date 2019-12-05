@@ -86,6 +86,8 @@ public class Auto extends LinearOpMode {
 
         waitForStart();
 
+
+        //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if (task == stones) {
             while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) { //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
                 driveBackwards();
@@ -100,7 +102,7 @@ public class Auto extends LinearOpMode {
            // bottomColorSensor = hardwareMap.colorSensor.get("bCS");
 
 
-            if (ColorBot.isBlack(robot.colorSensorL)) {
+            if (ColorBot.isBlack(robot.colorSensorL)&&ColorBot.isBlack(robot.colorSensorR)) {
                 telemetry.addData("Object is Black", robot.colorSensorL.red());
 
                 //Detects the Skystone
@@ -115,6 +117,17 @@ public class Auto extends LinearOpMode {
                 while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
                     driveForward();
                 }
+
+                while(!ColorBot.isRed(robot.colorSensorDown)) {
+                    strafeRight(.3);
+                }
+
+                stopDriving();
+
+                outAndBack();
+
+
+
             }
 
         }
@@ -175,7 +188,11 @@ public class Auto extends LinearOpMode {
                 stopDriving();
                 robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
                 stopDriving();
-                strafeRight(3);
+                while(!ColorBot.isRed(robot.colorSensorDown)){
+                    strafeRight(0.3);
+                }
+
+
             }
 
 

@@ -64,6 +64,7 @@ public class HardwareBACONbot
     public DistanceSensor rightDistance = null;
     public ColorSensor colorSensorL = null; //Adding in a color sensor for the blocks
     public ColorSensor colorSensorR = null; //Adding in a color sensor for the blocks
+    public ColorSensor colorSensorDown = null;
     public DistanceSensor distanceSensorL = null;
     public DistanceSensor distanceSensorR = null;
     public Servo    clawServo = null;
@@ -100,6 +101,7 @@ public class HardwareBACONbot
 
         colorSensorL = hwMap.get(ColorSensor.class, "colL");  //hub1 port 1
         colorSensorR = hwMap.get(ColorSensor.class, "colR"); //hub1 port 2
+        colorSensorDown = hwMap.get(ColorSensor.class, "colD");
         clawServo = hwMap.servo.get("claw"); //H1P0
 
 

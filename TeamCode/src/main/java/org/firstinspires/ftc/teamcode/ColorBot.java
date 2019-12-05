@@ -35,6 +35,8 @@ public class ColorBot extends LinearOpMode {
     static double yellowUpperBound = 30;
     static double yellowSaturationThreshold = 0.56;
     static double blackValueThreshold = 0.2;
+    static double redLowerBound = 0;
+    static double redUpperBound = 14;
 
     @Override
     public void runOpMode() {
@@ -139,6 +141,35 @@ public class ColorBot extends LinearOpMode {
         } else return false;
 
     }
+
+    public static boolean isRed(ColorSensor sensorColorRangeAsREVColorRangeSensor) {
+
+        int colorRGB;
+        float hue;
+        float sat;
+        float val;
+
+        colorRGB = Color.argb(sensorColorRangeAsREVColorRangeSensor.alpha(), sensorColorRangeAsREVColorRangeSensor.red(), sensorColorRangeAsREVColorRangeSensor.green(), sensorColorRangeAsREVColorRangeSensor.blue());
+        int redVal = sensorColorRangeAsREVColorRangeSensor.red();
+
+        // Converting from RGB to HSV
+        // Get hue.
+        hue = JavaUtil.colorToHue(colorRGB);
+        // Get saturation.
+        sat = JavaUtil.colorToSaturation(colorRGB);
+        // Get value.
+        val = JavaUtil.colorToValue(colorRGB);
+
+        if (val > blackValueThreshold) {
+            if ((hue > redLowerBound) && (hue < redUpperBound)) {
+                if (sat > yellowSaturationThreshold) {
+                    return true;
+                } else return false;
+            } else return false;
+        } else return false;
+
+    }
+
 }
 
 
