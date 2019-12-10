@@ -7,6 +7,8 @@ import android.view.View;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -29,7 +31,7 @@ public class Auto extends LinearOpMode {
         int teamcolor = 0; // 1 = Blue 2 = Red
         int blue = 1;
         int red = 2;
-        int task = 0;
+        int task = 0; //1 = mat 2 = stones
         int mat = 1;
         int stones = 2;
 
@@ -45,9 +47,11 @@ public class Auto extends LinearOpMode {
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
 
 
-//    robot.init(hardwareMap);
+        robot.init(hardwareMap);
+        // Choosing the team color
         telemetry.addData("Press X for Blue, B for Red", "");
         telemetry.update();
+        // TODO: What will go in this while loop?
         while (!gamepad1.x && !gamepad1.b) {
         }
         if (gamepad1.x) {
@@ -71,6 +75,7 @@ public class Auto extends LinearOpMode {
         telemetry.addData("teamcolor ", teamcolor);
         telemetry.update();
 
+        // Choosing the task
         telemetry.addData("Press A for mat, Y for stones", "");
         telemetry.update();
         while (!gamepad1.a && !gamepad1.y) {
@@ -84,54 +89,85 @@ public class Auto extends LinearOpMode {
         telemetry.addData("task ", task);
         telemetry.update();
 
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)robot.backDistance;
+
         waitForStart();
+        runtime.reset();
+
+        // run until the end of the match (driver presses STOP)
 
 
-        //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        if (task == stones) {
-            while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) { //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
-                driveBackwards();
+
+            //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if (task == stones) {
+
+                driveForward();
+                while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) {
+                    telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+                    // Rev2mDistanceSensor specific methods.
+                    telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+                    telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
+                    telemetry.update();
+                    //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
+                }
+                stopDriving();
+                telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+                telemetry.update();
+
+while (opModeIsActive()) {
+    telemetry.addData("Alpha", robot.colorSensorL.alpha());
+    if ( robot.colorSensorL.alpha() < 80)
+        telemetry.addData("Skystone", 1);
+    else
+        telemetry.addData("Yellow", 0);
+    telemetry.update();
+}
+/***********
+                /* Sample code for taking yellow/black readings
+
+
+                //ColorSensor bottomColorSensor;
+                // bottomColorSensor = hardwareMap.colorSensor.get("bCS");
+
+                //if NO skystone detected
+                if (ColorBot.isYellow(robot.colorSensorL) && ColorBot.isYellow(robot.colorSensorR)) {
+
+                    //strafe left
+                    strafeLeft(3);
+                    sleep(1000);
+
+                }
+
+                // if skystons ARE Detected
+                if (ColorBot.isBlack(robot.colorSensorL) && ColorBot.isBlack(robot.colorSensorR)) {
+                    telemetry.addData("Object is Black", robot.colorSensorL.red());
+
+                    //Detects the Skystone
+
+                    while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance + 20) {
+                        driveBackwards();
+                    }
+
+                    //pick up skystone
+                    stopDriving();
+                    robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
+
+                    while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
+                        driveForward();
+                    }
+
+                    while (!ColorBot.isRed(robot.colorSensorDown)) {
+                        strafeRight(.3);
+                    }
+*/
+                    stopDriving();
+
+                    //outAndBack();
+
+                }
             }
 
-            stopDriving();
 
-            /* Sample code for taking yellow/black readings */
-            // TODO: replace hardwareMap with robot after adding color sensor to hardwareMap
-
-            //ColorSensor bottomColorSensor;
-           // bottomColorSensor = hardwareMap.colorSensor.get("bCS");
-
-
-            if (ColorBot.isBlack(robot.colorSensorL)&&ColorBot.isBlack(robot.colorSensorR)) {
-                telemetry.addData("Object is Black", robot.colorSensorL.red());
-
-                //Detects the Skystone
-
-                while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance + 20) {
-                    driveBackwards();
-                }
-
-                stopDriving();
-                robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
-
-                while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
-                    driveForward();
-                }
-
-                while(!ColorBot.isRed(robot.colorSensorDown)) {
-                    strafeRight(.3);
-                }
-
-                stopDriving();
-
-                outAndBack();
-
-
-
-            }
-
-        }
-    }
             // Functions ----------------------------------------------------------------------------------------------------------------
 
 
@@ -184,7 +220,7 @@ public class Auto extends LinearOpMode {
 
             void outAndBack () {
                 strafeLeft(3);
-                //TimeUnit.SECONDS.sleep(1);
+                sleep(1000);
                 stopDriving();
                 robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
                 stopDriving();

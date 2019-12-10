@@ -31,12 +31,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-
 
 /**
  * This is NOT an opmode.
@@ -59,7 +58,8 @@ public class HardwareBACONbot
     public DcMotor  backLeftMotor    = null;
     public DcMotor  backRightMotor   = null;
 
-    public DistanceSensor  backDistance   = null;
+
+    public DistanceSensor backDistance = null;
     public DistanceSensor leftDistance = null;
     public DistanceSensor rightDistance = null;
     public ColorSensor colorSensorL = null; //Adding in a color sensor for the blocks
@@ -70,17 +70,14 @@ public class HardwareBACONbot
     public Servo    clawServo = null;
 
 
-
-
     //public Servo matServo = null;
 
     /* local OpMode members. */
-    private HardwareMap hwMap           =  null;
+    private HardwareMap hwMap =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
     public HardwareBACONbot(){
-
     }
 
     /* Initialize standard Hardware interfaces */
@@ -95,13 +92,14 @@ public class HardwareBACONbot
         backLeftMotor   = hwMap.dcMotor.get("BL"); // H1 2
         backRightMotor  = hwMap.dcMotor.get("BR"); // H1 3
 
-        backDistance = hwMap.get(DistanceSensor.class, "bsr");
-        leftDistance = hwMap.get(DistanceSensor.class, "lsr");
-        rightDistance = hwMap.get(DistanceSensor.class, "rsr");
+        backDistance = hwMap.get(DistanceSensor.class, "bsr"); //hub2 port 1
+
+        //leftDistance = hwMap.get(DistanceSensor.class, "lsr");
+        //rightDistance = hwMap.get(DistanceSensor.class, "rsr");
 
         colorSensorL = hwMap.get(ColorSensor.class, "colL");  //hub1 port 1
         colorSensorR = hwMap.get(ColorSensor.class, "colR"); //hub1 port 2
-        colorSensorDown = hwMap.get(ColorSensor.class, "colD");
+        colorSensorDown = hwMap.get(ColorSensor.class, "colD"); //hub1 port 3
         clawServo = hwMap.servo.get("claw"); //H1P0
 
 
@@ -136,6 +134,11 @@ public class HardwareBACONbot
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 
