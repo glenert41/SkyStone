@@ -58,6 +58,7 @@ public class HardwareBACONbot
     public DcMotor  backLeftMotor    = null;
     public DcMotor  backRightMotor   = null;
 
+    public DcMotor liftMotor = null;
 
     public DistanceSensor backDistance = null;
     public DistanceSensor leftDistance = null;
@@ -68,6 +69,8 @@ public class HardwareBACONbot
     public DistanceSensor distanceSensorL = null;
     public DistanceSensor distanceSensorR = null;
     public Servo    clawServo = null;
+
+
 
 
     //public Servo matServo = null;
@@ -92,6 +95,8 @@ public class HardwareBACONbot
         backLeftMotor   = hwMap.dcMotor.get("BL"); // H1 2
         backRightMotor  = hwMap.dcMotor.get("BR"); // H1 3
 
+        liftMotor = hwMap.dcMotor.get("LM"); // Hub 2 Port 0
+
         backDistance = hwMap.get(DistanceSensor.class, "bsr"); //hub2 port 1
 
         //leftDistance = hwMap.get(DistanceSensor.class, "lsr");
@@ -100,7 +105,8 @@ public class HardwareBACONbot
         colorSensorL = hwMap.get(ColorSensor.class, "colL");  //hub1 port 1
         colorSensorR = hwMap.get(ColorSensor.class, "colR"); //hub1 port 2
         colorSensorDown = hwMap.get(ColorSensor.class, "colD"); //hub1 port 3
-        clawServo = hwMap.servo.get("claw"); //H1P0
+        clawServo = hwMap.servo.get("claw"); //H1P5
+
 
 
 
@@ -122,7 +128,9 @@ public class HardwareBACONbot
         frontRightMotor.setPower(0);
         backLeftMotor.setPower(0);
         backRightMotor.setPower(0);
-        clawServo.setPosition(0);
+        //clawServo.setPosition(0);
+
+        liftMotor.setPower(0);
       //  matServo.setPosition(0);
 
         // Set all motors to run without encoders.
@@ -135,10 +143,16 @@ public class HardwareBACONbot
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
 

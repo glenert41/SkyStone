@@ -48,15 +48,15 @@ import java.util.concurrent.TimeUnit;
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
  * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
- *
+ * <p>
  * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
  * It includes all the skeletal structure that all linear OpModes contain.
- *
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="BACON: Mechanum", group="Opmode")
+@TeleOp(name = "BACON: Mechanum", group = "Opmode")
 //@Disabled
 public class BACONbotMechanum extends LinearOpMode {
 
@@ -84,14 +84,10 @@ public class BACONbotMechanum extends LinearOpMode {
         double meetDistance = 790; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double leftMeetDistance = 10;
 
-        double grabPos = 0;  //change these later (written 12-3-19)
-        double freePos = 1;  //change these later  (written 12-3-19)
+        float grabPos = 0;  //change these later (written 12-3-19)
+        float freePos = 1;  //change these later  (written 12-3-19)
 
-
-
-
-
-
+        float currentPos = 0;
 
 
         // run until the end of the match (driver presses STOP)
@@ -111,7 +107,6 @@ public class BACONbotMechanum extends LinearOpMode {
 
             // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
             // Get the x value of the right joystick.
-
 
 
             y = gamepad1.left_stick_y;
@@ -145,26 +140,71 @@ public class BACONbotMechanum extends LinearOpMode {
             robot.backRightMotor.setPower(backRight);
 
 
+            if (gamepad1.right_bumper && robot.liftMotor.getCurrentPosition() < 0 ) {
+                robot.liftMotor.setPower(0.3); //down
+            } else if (gamepad1.left_bumper && robot.liftMotor.getCurrentPosition() > -18000) {
+                robot.liftMotor.setPower(-0.3);  //up
+            } else {
+                robot.liftMotor.setPower(0);
+            }
+
+            if (gamepad1.a) {
+                robot.liftMotor.setPower(-0.7);
+                while (robot.liftMotor.getCurrentPosition() > -2000) {
+                    //do nothing}
+                }
+                robot.liftMotor.setPower(0.0);
+            }
+            if (gamepad1.b) {
+                robot.liftMotor.setPower(0.7);
+                while (robot.liftMotor.getCurrentPosition() < 0) {}
+                robot.liftMotor.setPower(0.0);
+            }
+
+            /*
+            if(gamepad1.x){
+                currrentPos = grabPos
+                robot.clawServo.setPosition(currentPos);
+            }
+            else if (gamepad1.y){
+                robot.clawServo.setPosition(freePos);
+            }
+            else{
+
+            }
+            */
+            double sp;
+            sp = robot.clawServo.getPosition();
+            if(gamepad1.x){
+                robot.clawServo.setPosition(sp+.1);
+            }
+
+            if(gamepad1.y){
+                robot.clawServo.setPosition(sp-.1);
+            }
+
+
+
+
+
             // Show wheel power to driver
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("front left", "%.2f", frontLeft);
-            telemetry.addData("front right", "%.2f", frontRight);
-            telemetry.addData("back left", "%.2f", backLeft);
-            telemetry.addData("back right", "%.2f", backRight);
-           // telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
+            //telemetry.addData("front left", "%.2f", frontLeft);
+            //telemetry.addData("front right", "%.2f", frontRight);
+            //telemetry.addData("back left", "%.2f", backLeft);
+            //telemetry.addData("back right", "%.2f", backRight);
+            telemetry.addData("lift pos", robot.liftMotor.getCurrentPosition());
+            telemetry.addData("claw pos", robot.clawServo.getPosition());
+            // telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
             //telemetry.addData("left distance--", String.format("%.01f mm", robot.leftDistance.getDistance(DistanceUnit.MM))); //Added this one
-           // telemetry.addData("colorSensor--", String.format("%.01f mm", robot.distanceSensorL.getDistance(DistanceUnit.MM))); //Added this one
+            // telemetry.addData("colorSensor--", String.format("%.01f mm", robot.distanceSensorL.getDistance(DistanceUnit.MM))); //Added this one
 
 
             telemetry.update();
 
 
-
         }
     }
-
-
-
 
 
     // Functions --------------------------------------
@@ -173,7 +213,7 @@ public class BACONbotMechanum extends LinearOpMode {
     //Driving Functions
 
     //Stop Driving - Kill power to all the motors
-    void stopDriving(){
+    void stopDriving() {
 
         robot.frontLeftMotor.setPower(0);
         robot.frontRightMotor.setPower(0);
@@ -184,7 +224,7 @@ public class BACONbotMechanum extends LinearOpMode {
     }
 
     //Drive Backwards - Used for starting the game
-    void driveBackwards(){
+    void driveBackwards() {
         robot.frontLeftMotor.setPower(-0.5);
         robot.frontRightMotor.setPower(0.5);
         robot.backLeftMotor.setPower(-0.5);
@@ -193,7 +233,7 @@ public class BACONbotMechanum extends LinearOpMode {
     }
 
     //Drive Forwards - Towards where the Backsensor is facing
-    void driveForward(){
+    void driveForward() {
         robot.frontLeftMotor.setPower(0.5);
         robot.frontRightMotor.setPower(-0.5);
         robot.backLeftMotor.setPower(0.5);
@@ -201,7 +241,7 @@ public class BACONbotMechanum extends LinearOpMode {
     }
 
     //Strafe Left - (used to strafe towards the center line for parking)
-    void strafeLeft(double pwr){  //added int pwr to reduce initial power
+    void strafeLeft(double pwr) {  //added int pwr to reduce initial power
         robot.frontLeftMotor.setPower(pwr);
         robot.backRightMotor.setPower(-pwr); //Changing the order in which the wheels start
         robot.frontRightMotor.setPower(pwr);
@@ -209,7 +249,7 @@ public class BACONbotMechanum extends LinearOpMode {
 
     }
 
-    void strafeRight(double pwr){  //added int pwr to reduce initial power
+    void strafeRight(double pwr) {  //added int pwr to reduce initial power
         robot.frontLeftMotor.setPower(-pwr);
         robot.backRightMotor.setPower(pwr); //Changing the order in which the wheels start
         robot.frontRightMotor.setPower(-pwr);
@@ -217,11 +257,11 @@ public class BACONbotMechanum extends LinearOpMode {
 
     }
 
-    void outAndBack(){
+    void outAndBack() {
         strafeLeft(3);
         //TimeUnit.SECONDS.sleep(1);
         stopDriving();
-        robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
+        // robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
         stopDriving();
         strafeRight(3);
     }

@@ -89,7 +89,7 @@ public class Auto extends LinearOpMode {
         telemetry.addData("task ", task);
         telemetry.update();
 
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor)robot.backDistance;
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) robot.backDistance;
 
         waitForStart();
         runtime.reset();
@@ -97,140 +97,139 @@ public class Auto extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
 
 
+        //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        if (task == stones) {
 
-            //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            if (task == stones) {
-
-                driveForward();
-                while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) {
-                    telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
-                    // Rev2mDistanceSensor specific methods.
-                    telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-                    telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-                    telemetry.update();
-                    //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
-                }
-                stopDriving();
-                telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+            driveForward();
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) {
+                telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+                // Rev2mDistanceSensor specific methods.
+                telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
+                telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
                 telemetry.update();
+                //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
+            }
+            stopDriving();
+            telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+            telemetry.update();
 
-while (opModeIsActive()) {
-    telemetry.addData("Alpha", robot.colorSensorL.alpha());
-    if ( robot.colorSensorL.alpha() < 80)
-        telemetry.addData("Skystone", 1);
-    else
-        telemetry.addData("Yellow", 0);
-    telemetry.update();
-}
+            while (opModeIsActive()) {
+                telemetry.addData("Alpha", robot.colorSensorL.alpha());
+                if (robot.colorSensorL.alpha() < 80)
+                    telemetry.addData("Skystone", 1);
+                else
+                    telemetry.addData("Yellow", 0);
+                telemetry.update();
+            }
 /***********
-                /* Sample code for taking yellow/black readings
+ /* Sample code for taking yellow/black readings
 
 
-                //ColorSensor bottomColorSensor;
-                // bottomColorSensor = hardwareMap.colorSensor.get("bCS");
+ //ColorSensor bottomColorSensor;
+ // bottomColorSensor = hardwareMap.colorSensor.get("bCS");
 
-                //if NO skystone detected
-                if (ColorBot.isYellow(robot.colorSensorL) && ColorBot.isYellow(robot.colorSensorR)) {
+ //if NO skystone detected
+ if (ColorBot.isYellow(robot.colorSensorL) && ColorBot.isYellow(robot.colorSensorR)) {
 
-                    //strafe left
-                    strafeLeft(3);
-                    sleep(1000);
+ //strafe left
+ strafeLeft(3);
+ sleep(1000);
 
-                }
+ }
 
-                // if skystons ARE Detected
-                if (ColorBot.isBlack(robot.colorSensorL) && ColorBot.isBlack(robot.colorSensorR)) {
-                    telemetry.addData("Object is Black", robot.colorSensorL.red());
+ // if skystons ARE Detected
+ if (ColorBot.isBlack(robot.colorSensorL) && ColorBot.isBlack(robot.colorSensorR)) {
+ telemetry.addData("Object is Black", robot.colorSensorL.red());
 
-                    //Detects the Skystone
+ //Detects the Skystone
 
-                    while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance + 20) {
-                        driveBackwards();
-                    }
+ while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance + 20) {
+ driveBackwards();
+ }
 
-                    //pick up skystone
-                    stopDriving();
-                    robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
+ //pick up skystone
+ stopDriving();
+ robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
 
-                    while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
-                        driveForward();
-                    }
+ while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
+ driveForward();
+ }
 
-                    while (!ColorBot.isRed(robot.colorSensorDown)) {
-                        strafeRight(.3);
-                    }
-*/
-                    stopDriving();
+ while (!ColorBot.isRed(robot.colorSensorDown)) {
+ strafeRight(.3);
+ }
+ */
+            stopDriving();
 
-                    //outAndBack();
-
-                }
-            }
-
-
-            // Functions ----------------------------------------------------------------------------------------------------------------
-
-
-            //Driving Functions
-
-            //Stop Driving - Kill power to all the motors
-            void stopDriving() {
-
-                robot.frontLeftMotor.setPower(0);
-                robot.frontRightMotor.setPower(0);
-                robot.backLeftMotor.setPower(0);
-                robot.backRightMotor.setPower(0);
-
-
-            }
-
-            //Drive Backwards - Used for starting the game
-            void driveBackwards () {
-                robot.frontLeftMotor.setPower(-0.5);
-                robot.frontRightMotor.setPower(0.5);
-                robot.backLeftMotor.setPower(-0.5);
-                robot.backRightMotor.setPower(0.5);
-
-            }
-
-            //Drive Forwards - Towards where the Backsensor is facing
-            void driveForward () {
-                robot.frontLeftMotor.setPower(0.5);
-                robot.frontRightMotor.setPower(-0.5);
-                robot.backLeftMotor.setPower(0.5);
-                robot.backRightMotor.setPower(-0.5);
-            }
-
-            //Strafe Left - (used to strafe towards the center line for parking)
-            void strafeLeft ( double pwr){  //added int pwr to reduce initial power
-                robot.frontLeftMotor.setPower(pwr);
-                robot.backRightMotor.setPower(-pwr); //Changing the order in which the wheels start
-                robot.frontRightMotor.setPower(pwr);
-                robot.backLeftMotor.setPower(-pwr);
-
-            }
-
-            void strafeRight ( double pwr){  //added int pwr to reduce initial power
-                robot.frontLeftMotor.setPower(-pwr);
-                robot.backRightMotor.setPower(pwr); //Changing the order in which the wheels start
-                robot.frontRightMotor.setPower(-pwr);
-                robot.backLeftMotor.setPower(pwr);
-
-            }
-
-            void outAndBack () {
-                strafeLeft(3);
-                sleep(1000);
-                stopDriving();
-                robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
-                stopDriving();
-                while(!ColorBot.isRed(robot.colorSensorDown)){
-                    strafeRight(0.3);
-                }
-
-
-            }
-
+            //outAndBack();
 
         }
+    }
+
+
+    // Functions ----------------------------------------------------------------------------------------------------------------
+
+
+    //Driving Functions
+
+    //Stop Driving - Kill power to all the motors
+    void stopDriving() {
+
+        robot.frontLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(0);
+        robot.backLeftMotor.setPower(0);
+        robot.backRightMotor.setPower(0);
+
+
+    }
+
+    //Drive Backwards - Used for starting the game
+    void driveBackwards() {
+        robot.frontLeftMotor.setPower(-0.5);
+        robot.frontRightMotor.setPower(0.5);
+        robot.backLeftMotor.setPower(-0.5);
+        robot.backRightMotor.setPower(0.5);
+
+    }
+
+    //Drive Forwards - Towards where the Backsensor is facing
+    void driveForward() {
+        robot.frontLeftMotor.setPower(0.5);
+        robot.frontRightMotor.setPower(-0.5);
+        robot.backLeftMotor.setPower(0.5);
+        robot.backRightMotor.setPower(-0.5);
+    }
+
+    //Strafe Left - (used to strafe towards the center line for parking)
+    void strafeLeft(double pwr) {  //added int pwr to reduce initial power
+        robot.frontLeftMotor.setPower(pwr);
+        robot.backRightMotor.setPower(-pwr); //Changing the order in which the wheels start
+        robot.frontRightMotor.setPower(pwr);
+        robot.backLeftMotor.setPower(-pwr);
+
+    }
+
+    void strafeRight(double pwr) {  //added int pwr to reduce initial power
+        robot.frontLeftMotor.setPower(-pwr);
+        robot.backRightMotor.setPower(pwr); //Changing the order in which the wheels start
+        robot.frontRightMotor.setPower(-pwr);
+        robot.backLeftMotor.setPower(pwr);
+
+    }
+
+    void outAndBack() {
+        strafeLeft(3);
+        sleep(1000);
+        stopDriving();
+        //robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
+        stopDriving();
+        while (!ColorBot.isRed(robot.colorSensorDown)) {
+            strafeRight(0.3);
+        }
+
+
+    }
+
+
+}
 
