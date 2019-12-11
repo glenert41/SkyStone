@@ -141,9 +141,9 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
             if (gamepad1.right_bumper && robot.liftMotor.getCurrentPosition() < 0 ) {
-                robot.liftMotor.setPower(0.3); //down
+                robot.liftMotor.setPower(.7); //down
             } else if (gamepad1.left_bumper && robot.liftMotor.getCurrentPosition() > -18000) {
-                robot.liftMotor.setPower(-0.3);  //up
+                robot.liftMotor.setPower(-0.7);  //up
             } else {
                 robot.liftMotor.setPower(0);
             }
