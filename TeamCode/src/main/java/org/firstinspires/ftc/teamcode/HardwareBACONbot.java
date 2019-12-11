@@ -69,6 +69,8 @@ public class HardwareBACONbot
     public DistanceSensor distanceSensorL = null;
     public DistanceSensor distanceSensorR = null;
     public Servo    clawServo = null;
+    public Servo    matServoL = null;
+    public Servo    matServoR = null;
 
 
 
@@ -107,6 +109,8 @@ public class HardwareBACONbot
         colorSensorDown = hwMap.get(ColorSensor.class, "colD"); //hub1 port 3
         clawServo = hwMap.servo.get("claw"); //H1P5
 
+        matServoL = hwMap.servo.get("matL");
+        matServoR = hwMap.servo.get("matR");
 
 
 

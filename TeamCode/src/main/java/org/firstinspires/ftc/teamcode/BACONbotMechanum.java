@@ -118,11 +118,20 @@ public class BACONbotMechanum extends LinearOpMode {
 
             // calculate the power for each wheel
 
+            backRight = +y - x + r;
+            frontRight = +y + x + r;
+
+            backLeft = -y - x + r;
+            frontLeft = -y + x + r;
+
+
+/*
             frontLeft = +y - x + r;
             backLeft = +y + x + r;
 
             frontRight = -y - x + r;
             backRight = -y + x + r;
+            */
 
             // Normalize the values so none exceeds +/- 1.0
             max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
@@ -134,31 +143,45 @@ public class BACONbotMechanum extends LinearOpMode {
             }
 
             // Set power on each wheel
-            robot.frontLeftMotor.setPower(frontLeft);
-            robot.frontRightMotor.setPower(frontRight);
-            robot.backLeftMotor.setPower(backLeft);
-            robot.backRightMotor.setPower(backRight);
+            robot.frontLeftMotor.setPower(frontLeft*0.5);
+            robot.frontRightMotor.setPower(frontRight*0.5);
+            robot.backLeftMotor.setPower(backLeft*0.5);
+            robot.backRightMotor.setPower(backRight*0.5);
 
 
             if (gamepad1.right_bumper && robot.liftMotor.getCurrentPosition() < 0 ) {
-                robot.liftMotor.setPower(.7); //down
+                robot.liftMotor.setPower(1); //down
             } else if (gamepad1.left_bumper && robot.liftMotor.getCurrentPosition() > -18000) {
-                robot.liftMotor.setPower(-0.7);  //up
+                robot.liftMotor.setPower(-1);  //up
             } else {
                 robot.liftMotor.setPower(0);
             }
 
             if (gamepad1.a) {
-                robot.liftMotor.setPower(-0.7);
+                robot.liftMotor.setPower(-1);
                 while (robot.liftMotor.getCurrentPosition() > -2000) {
                     //do nothing}
                 }
                 robot.liftMotor.setPower(0.0);
             }
             if (gamepad1.b) {
-                robot.liftMotor.setPower(0.7);
+                robot.liftMotor.setPower(1);
                 while (robot.liftMotor.getCurrentPosition() < 0) {}
                 robot.liftMotor.setPower(0.0);
+            }
+
+            double spL;
+             spL = robot.matServoL.getPosition();
+            double spR;
+            spR = robot.matServoR.getPosition();
+
+            if (gamepad1.dpad_down){
+                robot.matServoL.setPosition(spL+.1);
+                robot.matServoR.setPosition(spR-.1);
+            }
+            if (gamepad1.dpad_up){
+                robot.matServoL.setPosition(spL-.1);
+                robot.matServoR.setPosition(spR+.1);
             }
 
             /*
