@@ -149,6 +149,10 @@ public class BACONbotMechanum extends LinearOpMode {
             robot.backRightMotor.setPower(backRight*0.5);
 
 
+
+            //Raise and Lower Lift Motor (Manual)
+            //Left Bumper = Up
+            //Right Bumper = Down
             if (gamepad1.right_bumper && robot.liftMotor.getCurrentPosition() < 0 ) {
                 robot.liftMotor.setPower(1); //down
             } else if (gamepad1.left_bumper && robot.liftMotor.getCurrentPosition() > -18000) {
@@ -157,6 +161,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.liftMotor.setPower(0);
             }
 
+            //Goes to 1st Block Level
             if (gamepad1.a) {
                 robot.liftMotor.setPower(-1);
                 while (robot.liftMotor.getCurrentPosition() > -2000) {
@@ -164,17 +169,24 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
                 robot.liftMotor.setPower(0.0);
             }
+
+            //Goes to Ground Block Level
             if (gamepad1.b) {
                 robot.liftMotor.setPower(1);
                 while (robot.liftMotor.getCurrentPosition() < 0) {}
                 robot.liftMotor.setPower(0.0);
             }
 
+            //matServo Servo Position
             double spL;
              spL = robot.matServoL.getPosition();
             double spR;
             spR = robot.matServoR.getPosition();
 
+
+            //Grab mat
+            //Down D-pad - Grab
+            //Up D-pad - Free
             if (gamepad1.dpad_down){
                 robot.matServoL.setPosition(spL+.1);
                 robot.matServoR.setPosition(spR-.1);
@@ -196,6 +208,9 @@ public class BACONbotMechanum extends LinearOpMode {
 
             }
             */
+
+
+            //Claw Servo (Blocks)
             double sp;
             sp = robot.clawServo.getPosition();
             if(gamepad1.x){
