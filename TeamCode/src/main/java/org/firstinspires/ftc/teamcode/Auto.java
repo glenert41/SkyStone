@@ -37,10 +37,10 @@ public class Auto extends LinearOpMode {
 
         double meetDistance = 790; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
 
-        double grabPos = 0;  //change these later (written 12-3-19)
-        double freePos = 1;  //change these later  (written 12-3-19)
 
 
+        float grabPos = 0;  //change these later (written 12-3-19)
+        float freePos = 1;  //change these later  (written 12-3-19)
         // get a reference to the RelativeLayout so we can change the background
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
@@ -113,6 +113,38 @@ public class Auto extends LinearOpMode {
             telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
 
+
+        }
+         if(task == mat){
+                driveForward();
+             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drivetomat
+             {
+
+             }
+             stopDriving();
+             robot.matServoL.setPosition(freePos);
+             robot.matServoR.setPosition(grabPos);
+             //grabmat
+             //drivebacktowall
+             //releasemat
+             //gotored
+
+             driveBackwards();
+
+             while ((robot.backDistance.getDistance(DistanceUnit.MM) > 30) && opModeIsActive()) //drivetomat
+             {
+
+             }
+             stopDriving();
+             robot.matServoL.setPosition(grabPos);
+             robot.matServoR.setPosition(freePos);
+
+             strafeLeft(.6);
+             while (!ColorBot.isRed(robot.colorSensorDown)) {
+             }
+             stopDriving();
+         }
+
             while (opModeIsActive()) {
                 telemetry.addData("Alpha", robot.colorSensorL.alpha());
                 if (robot.colorSensorL.alpha() < 80)
@@ -159,12 +191,13 @@ public class Auto extends LinearOpMode {
  strafeRight(.3);
  }
  */
-            stopDriving();
+            //stopDriving();
 
             //outAndBack();
 
         }
-    }
+
+
 
 
     // Functions ----------------------------------------------------------------------------------------------------------------

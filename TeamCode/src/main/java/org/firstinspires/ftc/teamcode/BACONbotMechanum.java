@@ -114,7 +114,7 @@ public class BACONbotMechanum extends LinearOpMode {
             r = gamepad1.right_stick_x;
 
             // do not let rotation dominate movement
-            r = r / 4;
+            //r = r / 4;
 
             // calculate the power for each wheel
 
@@ -184,16 +184,31 @@ public class BACONbotMechanum extends LinearOpMode {
             spR = robot.matServoR.getPosition();
 
 
+
+
             //Grab mat
             //Down D-pad - Grab
             //Up D-pad - Free
-            if (gamepad1.dpad_down){
+            /*if (gamepad1.dpad_down){
                 robot.matServoL.setPosition(spL+.1);
                 robot.matServoR.setPosition(spR-.1);
             }
             if (gamepad1.dpad_up){
                 robot.matServoL.setPosition(spL-.1);
                 robot.matServoR.setPosition(spR+.1);
+            }
+            */
+
+            double GrabPos = 1;
+            double FreePos = 0;
+
+            if(gamepad1.dpad_down){
+                robot.matServoL.setPosition(freePos);
+                robot.matServoR.setPosition(grabPos);
+            }
+            if(gamepad1.dpad_up){
+                robot.matServoL.setPosition(grabPos);
+                robot.matServoR.setPosition(freePos);
             }
 
             /*
@@ -213,12 +228,16 @@ public class BACONbotMechanum extends LinearOpMode {
             //Claw Servo (Blocks)
             double sp;
             sp = robot.clawServo.getPosition();
-            if(gamepad1.x){
-                robot.clawServo.setPosition(sp+.1);
-            }
 
-            if(gamepad1.y){
-                robot.clawServo.setPosition(sp-.1);
+            if(gamepad1.x){
+                if(sp == 0){
+                     robot.clawServo.setPosition(1);
+                     sleep(500);
+                }
+                if (sp==1){
+                    robot.clawServo.setPosition(0);
+                    sleep(500);
+                }
             }
 
 
