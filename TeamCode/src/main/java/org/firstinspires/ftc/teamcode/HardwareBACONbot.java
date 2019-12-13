@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
@@ -71,6 +72,9 @@ public class HardwareBACONbot
     public Servo    clawServo = null;
     public Servo    matServoL = null;
     public Servo    matServoR = null;
+    public RevBlinkinLedDriver blinkinLedDriver;
+    public RevBlinkinLedDriver.BlinkinPattern pattern;
+
 
 
 
@@ -111,6 +115,8 @@ public class HardwareBACONbot
 
         matServoL = hwMap.servo.get("matL");
         matServoR = hwMap.servo.get("matR");
+
+        blinkinLedDriver = hwMap.get(RevBlinkinLedDriver.class, "blinkin");
 
 
 

@@ -29,6 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
+
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -63,16 +68,51 @@ public class BACONbotMechanum extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     HardwareBACONbot robot = new HardwareBACONbot();   // Use a BACONbot's hardware
+    int teamcolor = 0; // 1 = Blue 2 = Red
+    int blue = 1;
+    int red = 2;
+
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initializing");
         telemetry.update();
 
+
+        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
+
+        telemetry.addData("Press X for Blue, B for Red", "");
+        telemetry.update();
+        // TODO: What will go in this while loop?
+        while (!gamepad1.x && !gamepad1.b) {
+        }
+        if (gamepad1.x) {
+            teamcolor = blue;
+            // Set the panel back to the default color
+            relativeLayout.post(new Runnable() {
+                public void run() {
+                    relativeLayout.setBackgroundColor(Color.BLUE);
+                    robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
+                    robot.blinkinLedDriver.setPattern(robot.pattern);
+                }
+            });
+        }
+        if (gamepad1.b) {
+            teamcolor = red;
+            // Set the panel back to the default color
+            relativeLayout.post(new Runnable() {
+                public void run() {
+                    relativeLayout.setBackgroundColor(Color.RED);
+                    robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED;
+                    robot.blinkinLedDriver.setPattern(robot.pattern);
+                }
+            });
+        }
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -89,6 +129,17 @@ public class BACONbotMechanum extends LinearOpMode {
 
         float currentPos = 0;
 
+        double x;
+        double y;
+        double r;
+        double frontLeft;
+        double frontRight;
+        double backLeft;
+        double backRight;
+        double max;
+        double step = 0.2;
+        double interval = 200;
+        double lastSpeedTime = runtime.milliseconds();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -96,14 +147,6 @@ public class BACONbotMechanum extends LinearOpMode {
             // In this mode the Left stick moves the robot in the direction pointed to by x,y
             //              the Right stick x controls rotation; right (positive) rotates clockwise
 
-            double x;
-            double y;
-            double r;
-            double frontLeft;
-            double frontRight;
-            double backLeft;
-            double backRight;
-            double max;
 
             // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
             // Get the x value of the right joystick.
@@ -120,40 +163,41 @@ public class BACONbotMechanum extends LinearOpMode {
 
             backRight = +y - x + r;
             frontRight = +y + x + r;
-
             backLeft = -y - x + r;
             frontLeft = -y + x + r;
 
 
-/*
-            frontLeft = +y - x + r;
-            backLeft = +y + x + r;
+            if (runtime.milliseconds() > lastSpeedTime + interval) {
+                lastSpeedTime = runtime.milliseconds();
 
-            frontRight = -y - x + r;
-            backRight = -y + x + r;
-            */
+                /* disable ramp up
+                frontLeft = getRampPower(frontLeft, robot.frontLeftMotor.getPower(), step);
+                frontRight = getRampPower(frontRight, robot.frontRightMotor.getPower(), step);
+                backLeft = getRampPower(backLeft, robot.backLeftMotor.getPower(), step);
+                backRight = getRampPower(backRight, robot.backRightMotor.getPower(), step);
+*/
 
-            // Normalize the values so none exceeds +/- 1.0
-            max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
-            if (max > 1.0) {
-                frontLeft = frontLeft / max;
-                frontRight = frontRight / max;
-                backLeft = backLeft / max;
-                backRight = backRight / max;
+                // Normalize the values so none exceeds +/- 1.0
+                max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
+                if (max > 1.0) {
+                    frontLeft = frontLeft / max;
+                    frontRight = frontRight / max;
+                    backLeft = backLeft / max;
+                    backRight = backRight / max;
+                }
+
+                // Set power on each wheel
+                robot.frontLeftMotor.setPower(frontLeft);
+                robot.frontRightMotor.setPower(frontRight);
+                robot.backLeftMotor.setPower(backLeft);
+                robot.backRightMotor.setPower(backRight);
+
             }
-
-            // Set power on each wheel
-            robot.frontLeftMotor.setPower(frontLeft*0.5);
-            robot.frontRightMotor.setPower(frontRight*0.5);
-            robot.backLeftMotor.setPower(backLeft*0.5);
-            robot.backRightMotor.setPower(backRight*0.5);
-
-
 
             //Raise and Lower Lift Motor (Manual)
             //Left Bumper = Up
             //Right Bumper = Down
-            if (gamepad1.right_bumper && robot.liftMotor.getCurrentPosition() < 0 ) {
+            if (gamepad1.right_bumper && robot.liftMotor.getCurrentPosition() < 0) {
                 robot.liftMotor.setPower(1); //down
             } else if (gamepad1.left_bumper && robot.liftMotor.getCurrentPosition() > -18000) {
                 robot.liftMotor.setPower(-1);  //up
@@ -173,17 +217,16 @@ public class BACONbotMechanum extends LinearOpMode {
             //Goes to Ground Block Level
             if (gamepad1.b) {
                 robot.liftMotor.setPower(1);
-                while (robot.liftMotor.getCurrentPosition() < 0) {}
+                while (robot.liftMotor.getCurrentPosition() < 0) {
+                }
                 robot.liftMotor.setPower(0.0);
             }
 
             //matServo Servo Position
             double spL;
-             spL = robot.matServoL.getPosition();
+            spL = robot.matServoL.getPosition();
             double spR;
             spR = robot.matServoR.getPosition();
-
-
 
 
             //Grab mat
@@ -202,11 +245,11 @@ public class BACONbotMechanum extends LinearOpMode {
             double GrabPos = 1;
             double FreePos = 0;
 
-            if(gamepad1.dpad_down){
+            if (gamepad1.dpad_down) {
                 robot.matServoL.setPosition(freePos);
                 robot.matServoR.setPosition(grabPos);
             }
-            if(gamepad1.dpad_up){
+            if (gamepad1.dpad_up) {
                 robot.matServoL.setPosition(grabPos);
                 robot.matServoR.setPosition(freePos);
             }
@@ -229,27 +272,25 @@ public class BACONbotMechanum extends LinearOpMode {
             double sp;
             sp = robot.clawServo.getPosition();
 
-            if(gamepad1.x){
-                if(sp == 0){
-                     robot.clawServo.setPosition(1);
-                     sleep(500);
+            if (gamepad1.x) {
+                if (sp == 0) {
+                    robot.clawServo.setPosition(1);
+                    sleep(500);
                 }
-                if (sp==1){
+                if (sp == 1) {
                     robot.clawServo.setPosition(0);
                     sleep(500);
                 }
             }
 
 
-
-
-
             // Show wheel power to driver
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            //telemetry.addData("front left", "%.2f", frontLeft);
-            //telemetry.addData("front right", "%.2f", frontRight);
-            //telemetry.addData("back left", "%.2f", backLeft);
-            //telemetry.addData("back right", "%.2f", backRight);
+            telemetry.addData("lastSpeedTime",  lastSpeedTime);
+            telemetry.addData("front left", "%.2f", frontLeft);
+            telemetry.addData("front right", "%.2f", frontRight);
+            telemetry.addData("back left", "%.2f", backLeft);
+            telemetry.addData("back right", "%.2f", backRight);
             telemetry.addData("lift pos", robot.liftMotor.getCurrentPosition());
             telemetry.addData("claw pos", robot.clawServo.getPosition());
             // telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
@@ -321,5 +362,28 @@ public class BACONbotMechanum extends LinearOpMode {
         // robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
         stopDriving();
         strafeRight(3);
+    }
+
+    double getRampPower(double t, double a, double step) {
+        double delta;
+        double returnPower = 0;
+
+        delta = t - a;
+        if (delta > 0) {  // speeding up
+            returnPower = a + step;
+            if (returnPower > t) {
+                returnPower = t;
+            }
+        }
+        if (delta < 0) {  //slowing down
+            //returnPower = a - (step*2);
+            //if (returnPower < t)
+                returnPower = t;
+        }
+        if (delta == 0) {
+            returnPower = a;
+        }
+
+        return returnPower;
     }
 }

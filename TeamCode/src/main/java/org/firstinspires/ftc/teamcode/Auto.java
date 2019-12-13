@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -35,7 +36,7 @@ public class Auto extends LinearOpMode {
         int mat = 1;
         int stones = 2;
 
-        double meetDistance = 790; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+        double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
 
 
 
@@ -60,6 +61,8 @@ public class Auto extends LinearOpMode {
             relativeLayout.post(new Runnable() {
                 public void run() {
                     relativeLayout.setBackgroundColor(Color.BLUE);
+                    robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
+                    robot.blinkinLedDriver.setPattern(robot.pattern);
                 }
             });
         }
@@ -69,6 +72,8 @@ public class Auto extends LinearOpMode {
             relativeLayout.post(new Runnable() {
                 public void run() {
                     relativeLayout.setBackgroundColor(Color.RED);
+                    robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED;
+                    robot.blinkinLedDriver.setPattern(robot.pattern);
                 }
             });
         }
@@ -114,6 +119,8 @@ public class Auto extends LinearOpMode {
             telemetry.update();
 
 
+
+
         }
          if(task == mat){
                 driveForward();
@@ -124,6 +131,7 @@ public class Auto extends LinearOpMode {
              stopDriving();
              robot.matServoL.setPosition(freePos);
              robot.matServoR.setPosition(grabPos);
+             sleep(1500);
              //grabmat
              //drivebacktowall
              //releasemat
@@ -131,22 +139,26 @@ public class Auto extends LinearOpMode {
 
              driveBackwards();
 
-             while ((robot.backDistance.getDistance(DistanceUnit.MM) > 30) && opModeIsActive()) //drivetomat
+             while ((robot.backDistance.getDistance(DistanceUnit.MM) > 200) && opModeIsActive()) //drivetomat
              {
-
+                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+                 telemetry.update();
              }
              stopDriving();
              robot.matServoL.setPosition(grabPos);
              robot.matServoR.setPosition(freePos);
 
-             strafeLeft(.6);
-             while (!ColorBot.isRed(robot.colorSensorDown)) {
+             strafeRight(.6);
+             while (robot.colorSensorDown.red()<30&& opModeIsActive()) {
+                 telemetry.addData("Red  ", robot.colorSensorDown.red());
+                 telemetry.update();
              }
              stopDriving();
          }
 
             while (opModeIsActive()) {
                 telemetry.addData("Alpha", robot.colorSensorL.alpha());
+                telemetry.addData("Red  ", robot.colorSensorDown.red());
                 if (robot.colorSensorL.alpha() < 80)
                     telemetry.addData("Skystone", 1);
                 else
