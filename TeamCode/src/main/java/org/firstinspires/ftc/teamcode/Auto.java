@@ -268,10 +268,11 @@ public class Auto extends LinearOpMode {
         stopDriving();
         //robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
         stopDriving();
-        while (!ColorBot.isRed(robot.colorSensorDown)) {
-            strafeRight(0.3);
-        }
+        strafeRight(0.6);
+        while (robot.colorSensorDown.red()<30 && opModeIsActive() ) {
 
+        }
+        stopDriving();
 
     }
 
