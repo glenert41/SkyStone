@@ -145,9 +145,9 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
                 frontLeft = getRampPower(frontLeft, robot.frontLeftMotor.getPower(), step);
-                frontRight = getRampPower(-frontRight, -robot.frontRightMotor.getPower(), step);
+                frontRight = getRampPower(frontRight, robot.frontRightMotor.getPower(), step);
                 backLeft = getRampPower(backLeft, robot.backLeftMotor.getPower(), step);
-                backRight = getRampPower(-backRight, -robot.backRightMotor.getPower(), step);
+                backRight = getRampPower(backRight, robot.backRightMotor.getPower(), step);
 
                 frontRight = -frontRight;
                 backRight = - backRight;
@@ -276,6 +276,21 @@ public class BACONbotMechanum extends LinearOpMode {
             }
 
 
+
+
+            telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
+            telemetry.addData("Right Snesor", "Alpha:" + robot.colorSensorR.alpha());
+            telemetry.update();
+
+
+
+
+
+
+
+
+
+/*
             // Show wheel power to driver
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("lastSpeedTime",  lastSpeedTime);
@@ -287,7 +302,9 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.addData("claw pos", robot.clawServo.getPosition());
             // telemetry.addData("back distance--", String.format("%.01f mm", robot.backDistance.getDistance(DistanceUnit.MM)));
             //telemetry.addData("left distance--", String.format("%.01f mm", robot.leftDistance.getDistance(DistanceUnit.MM))); //Added this one
-            // telemetry.addData("colorSensor--", String.format("%.01f mm", robot.distanceSensorL.getDistance(DistanceUnit.MM))); //Added this one
+           // telemetry.addData("colorSensor--", String.format("%.01f mm", robot.distanceSensorL.getDistance(DistanceUnit.MM))); //Added this one
+
+*/
 
 
             telemetry.update();
@@ -368,8 +385,8 @@ public class BACONbotMechanum extends LinearOpMode {
             }
         }
         if (delta < 0) {  //slowing down
-            //returnPower = a - (step*2);
-            //if (returnPower < t)
+            returnPower = a - (step);
+            if (returnPower < t)
             returnPower = t;
         }
         if (delta == 0) {

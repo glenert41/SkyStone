@@ -108,6 +108,8 @@ public class Auto extends LinearOpMode {
         //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if (task == stones) {
 
+            double scanPhase = 0;
+            double grabPhase = 0;
             driveForward();
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) {
                 telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
@@ -115,50 +117,54 @@ public class Auto extends LinearOpMode {
                 telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
                 telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
                 telemetry.update();
+
                 //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
             }
+            scanPhase = 1;
             stopDriving();
             //telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
             //telemetry.update();
 
+            while(scanPhase == 1) {
+                double bothYellow = 1;
 
-            double bothYellow = 1;
-
-            if ((robot.colorSensorL.alpha() > 40) && (robot.colorSensorR.alpha() > 40)) {
-                bothYellow = 1;
-            }
-
-            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() > 40)) {
-                bothYellow = 1;
-            }
-            if ((robot.colorSensorL.alpha() > 40) && (robot.colorSensorR.alpha() < 40)) {
+                if ((robot.colorSensorL.alpha() > 45) && (robot.colorSensorR.alpha() > 45)) {
                     bothYellow = 1;
-            }
-            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() < 40)){
-                bothYellow = 0;
+                }
+
+                if ((robot.colorSensorL.alpha() < 45) && (robot.colorSensorR.alpha() > 45)) {
+                    bothYellow = 1;
+                }
+                if ((robot.colorSensorL.alpha() > 45) && (robot.colorSensorR.alpha() < 45)) {
+                    bothYellow = 1;
+                }
+
+                if ((robot.colorSensorL.alpha() < 45) && (robot.colorSensorR.alpha() < 45)) {
+                    bothYellow = 0;
+                }
+
+
+
+                telemetry.addData("bothYellowVal:", "Yellow State" + bothYellow);
+                telemetry.update();
+
+                while (bothYellow == 1) {
+
+                }
+
+                if (bothYellow == 0) {
+
+                   telemetry.addData("SICK","I SEE A SKYSTONE");
+                   telemetry.update();
+                   scanPhase = 0;
+                   grabPhase = 1;
+
+                }
             }
 
-            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() < 40)) {
-                telemetry.addData("Skystone", 1);
-                telemetry.update();
-            }
-            else
-                telemetry.addData("Skystone", 0);
-                telemetry.update();
-
-            while(bothYellow == 1){
-                //telemetry.addData("Both Yellow", "BY:  = True");
-                //telemetry.update();
-                //strafeLeft(1);
-            }
-            
-            if(bothYellow == 0){
+            while(grabPhase == 1){
                 stopDriving();
-               // telemetry.addData("Both Yellow", "I SEE A SKYSTONE AND IM GRABBING IT");
-             //   telemetry.update();
-
             }
-                
 
 
 
