@@ -37,7 +37,7 @@ public class Auto extends LinearOpMode {
         int stones = 2;
 
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
-        
+        double lastTime = runtime.milliseconds();
 
 
 
@@ -171,9 +171,15 @@ public class Auto extends LinearOpMode {
 
             }
             stopDriving();
+            lastTime= runtime.milliseconds();
+            strafeLeft(.3);
+            while (runtime.milliseconds()<lastTime+1000){
+
+            }
+            stopDriving();
             robot.matServoL.setPosition(freePos);
             robot.matServoR.setPosition(grabPos);
-            sleep(1500);
+            sleep(1000);
             //grabmat
             //drivebacktowall
             //releasemat
@@ -189,6 +195,7 @@ public class Auto extends LinearOpMode {
             stopDriving();
             robot.matServoL.setPosition(grabPos);
             robot.matServoR.setPosition(freePos);
+            sleep(1000);
 
             strafeRight(.6);
             while (robot.colorSensorDown.red()<30&& opModeIsActive()) {

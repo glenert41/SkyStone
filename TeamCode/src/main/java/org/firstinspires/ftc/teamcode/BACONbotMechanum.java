@@ -111,7 +111,7 @@ public class BACONbotMechanum extends LinearOpMode {
         double backRight;
         double max;
         double step = 0.2;
-        double interval = 200;
+        double interval = 150;
         double lastSpeedTime = runtime.milliseconds();
 
         // run until the end of the match (driver presses STOP)
@@ -130,7 +130,7 @@ public class BACONbotMechanum extends LinearOpMode {
             r = gamepad1.right_stick_x;
 
             // do not let rotation dominate movement
-            //r = r / 4;
+            r = r / 3;
 
             // calculate the power for each wheel
 
@@ -143,12 +143,14 @@ public class BACONbotMechanum extends LinearOpMode {
             if (runtime.milliseconds() > lastSpeedTime + interval) {
                 lastSpeedTime = runtime.milliseconds();
 
-                /* disable ramp up
+
                 frontLeft = getRampPower(frontLeft, robot.frontLeftMotor.getPower(), step);
-                frontRight = getRampPower(frontRight, robot.frontRightMotor.getPower(), step);
+                frontRight = getRampPower(-frontRight, -robot.frontRightMotor.getPower(), step);
                 backLeft = getRampPower(backLeft, robot.backLeftMotor.getPower(), step);
-                backRight = getRampPower(backRight, robot.backRightMotor.getPower(), step);
-*/
+                backRight = getRampPower(-backRight, -robot.backRightMotor.getPower(), step);
+
+                frontRight = -frontRight;
+                backRight = - backRight;
 
                 // Normalize the values so none exceeds +/- 1.0
                 max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
