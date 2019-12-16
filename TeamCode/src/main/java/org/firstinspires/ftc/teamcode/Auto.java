@@ -107,9 +107,11 @@ public class Auto extends LinearOpMode {
 
         //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if (task == stones) {
-
+            double bothYellow = 1;
             double scanPhase = 0;
-            double grabPhase = 0;
+
+
+
             driveForward();
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) {
                 telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
@@ -125,8 +127,8 @@ public class Auto extends LinearOpMode {
             //telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
             //telemetry.update();
 
-            while(scanPhase == 1) {
-                double bothYellow = 1;
+            while(scanPhase == 1 && bothYellow == 1) {
+
 
                 if ((robot.colorSensorL.alpha() > 45) && (robot.colorSensorR.alpha() > 45)) {
                     bothYellow = 1;
@@ -143,28 +145,24 @@ public class Auto extends LinearOpMode {
                     bothYellow = 0;
                 }
 
-
-
-                telemetry.addData("bothYellowVal:", "Yellow State" + bothYellow);
+                telemetry.addData("leftVal = ","leftVal = " + robot.colorSensorL.alpha());
+                telemetry.addData("rightVal = ","rightVal = " + robot.colorSensorR.alpha());
+                telemetry.addData("bothYellowVal: ", "Yellow State: " + bothYellow);
                 telemetry.update();
 
-                while (bothYellow == 1) {
 
-                }
 
                 if (bothYellow == 0) {
 
                    telemetry.addData("SICK","I SEE A SKYSTONE");
                    telemetry.update();
-                   scanPhase = 0;
-                   grabPhase = 1;
+                   //scanPhase = 0;
+
 
                 }
             }
 
-            while(grabPhase == 1){
-                stopDriving();
-            }
+
 
 
 
