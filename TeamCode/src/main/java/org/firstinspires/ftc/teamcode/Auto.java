@@ -37,6 +37,8 @@ public class Auto extends LinearOpMode {
         int stones = 2;
 
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+        
+
 
 
 
@@ -77,6 +79,7 @@ public class Auto extends LinearOpMode {
                 }
             });
         }
+
         telemetry.addData("teamcolor ", teamcolor);
         telemetry.update();
 
@@ -115,8 +118,47 @@ public class Auto extends LinearOpMode {
                 //**Changed the number here- not sure its quite perfect yet but this is the best we have gotten
             }
             stopDriving();
-            telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
-            telemetry.update();
+            //telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+            //telemetry.update();
+
+
+            double bothYellow = 1;
+
+            if ((robot.colorSensorL.alpha() > 40) && (robot.colorSensorR.alpha() > 40)) {
+                bothYellow = 1;
+            }
+
+            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() > 40)) {
+                bothYellow = 1;
+            }
+            if ((robot.colorSensorL.alpha() > 40) && (robot.colorSensorR.alpha() < 40)) {
+                    bothYellow = 1;
+            }
+            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() < 40)){
+                bothYellow = 0;
+            }
+
+            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() < 40)) {
+                telemetry.addData("Skystone", 1);
+                telemetry.update();
+            }
+            else
+                telemetry.addData("Skystone", 0);
+                telemetry.update();
+
+            while(bothYellow == 1){
+                //telemetry.addData("Both Yellow", "BY:  = True");
+                //telemetry.update();
+                //strafeLeft(1);
+            }
+            
+            if(bothYellow == 0){
+                stopDriving();
+               // telemetry.addData("Both Yellow", "I SEE A SKYSTONE AND IM GRABBING IT");
+             //   telemetry.update();
+
+            }
+                
 
 
 
@@ -159,7 +201,7 @@ public class Auto extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Alpha", robot.colorSensorL.alpha());
             telemetry.addData("Red  ", robot.colorSensorDown.red());
-            if (robot.colorSensorL.alpha() < 80)
+            if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() < 40))
                 telemetry.addData("Skystone", 1);
             else
                 telemetry.addData("Yellow", 0);
@@ -173,7 +215,6 @@ public class Auto extends LinearOpMode {
  if (ColorBot.isYellow(robot.colorSensorL) && ColorBot.isYellow(robot.colorSensorR)) {
  //strafe left
  strafeLeft(3);
- sleep(1000);
  }
  // if skystons ARE Detected
  if (ColorBot.isBlack(robot.colorSensorL) && ColorBot.isBlack(robot.colorSensorR)) {

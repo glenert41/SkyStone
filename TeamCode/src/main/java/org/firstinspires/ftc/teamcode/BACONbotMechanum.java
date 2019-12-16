@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.robocol.Heartbeat;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -244,14 +245,32 @@ public class BACONbotMechanum extends LinearOpMode {
             sp = robot.clawServo.getPosition();
 
             if (gamepad1.x) {
+
+
+
                 if (sp == 0) {
                     robot.clawServo.setPosition(1);
+                    relativeLayout.post(new Runnable() {
+                        public void run(){
+                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
+                            robot.blinkinLedDriver.setPattern(robot.pattern);
+                }
+                        });
                     sleep(500);
                 }
+
+
                 if (sp == 1) {
                     robot.clawServo.setPosition(0);
+                    relativeLayout.post(new Runnable() {
+                        public void run(){
+                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+                            robot.blinkinLedDriver.setPattern(robot.pattern);
+                        }
+                    });
                     sleep(500);
                 }
+
             }
 
 
