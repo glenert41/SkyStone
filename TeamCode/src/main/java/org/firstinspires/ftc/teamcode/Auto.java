@@ -122,92 +122,81 @@ public class Auto extends LinearOpMode {
 
 
         }
-         if(task == mat){
-                driveForward();
-             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drivetomat
-             {
+        if(task == mat){
+            driveForward();
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drivetomat
+            {
 
-             }
-             stopDriving();
-             robot.matServoL.setPosition(freePos);
-             robot.matServoR.setPosition(grabPos);
-             sleep(1500);
-             //grabmat
-             //drivebacktowall
-             //releasemat
-             //gotored
+            }
+            stopDriving();
+            robot.matServoL.setPosition(freePos);
+            robot.matServoR.setPosition(grabPos);
+            sleep(1500);
+            //grabmat
+            //drivebacktowall
+            //releasemat
+            //gotored
 
-             driveBackwards();
+            driveBackwards();
 
-             while ((robot.backDistance.getDistance(DistanceUnit.MM) > 200) && opModeIsActive()) //drivetomat
-             {
-                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
-                 telemetry.update();
-             }
-             stopDriving();
-             robot.matServoL.setPosition(grabPos);
-             robot.matServoR.setPosition(freePos);
-
-             strafeRight(.6);
-             while (robot.colorSensorDown.red()<30&& opModeIsActive()) {
-                 telemetry.addData("Red  ", robot.colorSensorDown.red());
-                 telemetry.update();
-             }
-             stopDriving();
-         }
-
-            while (opModeIsActive()) {
-                telemetry.addData("Alpha", robot.colorSensorL.alpha());
-                telemetry.addData("Red  ", robot.colorSensorDown.red());
-                if (robot.colorSensorL.alpha() < 80)
-                    telemetry.addData("Skystone", 1);
-                else
-                    telemetry.addData("Yellow", 0);
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 200) && opModeIsActive()) //drivetomat
+            {
+                telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
             }
+            stopDriving();
+            robot.matServoL.setPosition(grabPos);
+            robot.matServoR.setPosition(freePos);
+
+            strafeRight(.6);
+            while (robot.colorSensorDown.red()<30&& opModeIsActive()) {
+                telemetry.addData("Red  ", robot.colorSensorDown.red());
+                telemetry.update();
+            }
+            stopDriving();
+        }
+
+        while (opModeIsActive()) {
+            telemetry.addData("Alpha", robot.colorSensorL.alpha());
+            telemetry.addData("Red  ", robot.colorSensorDown.red());
+            if (robot.colorSensorL.alpha() < 80)
+                telemetry.addData("Skystone", 1);
+            else
+                telemetry.addData("Yellow", 0);
+            telemetry.update();
+        }
 /***********
  /* Sample code for taking yellow/black readings
-
-
  //ColorSensor bottomColorSensor;
  // bottomColorSensor = hardwareMap.colorSensor.get("bCS");
-
  //if NO skystone detected
  if (ColorBot.isYellow(robot.colorSensorL) && ColorBot.isYellow(robot.colorSensorR)) {
-
  //strafe left
  strafeLeft(3);
  sleep(1000);
-
  }
-
  // if skystons ARE Detected
  if (ColorBot.isBlack(robot.colorSensorL) && ColorBot.isBlack(robot.colorSensorR)) {
  telemetry.addData("Object is Black", robot.colorSensorL.red());
-
  //Detects the Skystone
-
  while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance + 20) {
  driveBackwards();
  }
-
  //pick up skystone
  stopDriving();
  robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
-
  while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
  driveForward();
  }
-
  while (!ColorBot.isRed(robot.colorSensorDown)) {
  strafeRight(.3);
  }
  */
-            //stopDriving();
+        //stopDriving();
 
-            //outAndBack();
+        //outAndBack();
 
-        }
+    }
 
 
 
@@ -277,4 +266,3 @@ public class Auto extends LinearOpMode {
 
 
 }
-
