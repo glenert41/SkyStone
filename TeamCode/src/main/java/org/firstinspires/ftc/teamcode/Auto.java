@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.HardwareBACONbot;
 //name file AutonomousB
 public class Auto extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
-    HardwareBACONbot robot = new HardwareBACONbot();   // Use a BACONbot's hardware
+    HardwareBACONbot robot = new HardwareBACONbot();   // Use BACONbot's hardware
 
 
     public void runOpMode() {
@@ -41,9 +41,11 @@ public class Auto extends LinearOpMode {
 
 
 
-
         float grabPos = 0;  //change these later (written 12-3-19)
         float freePos = 1;  //change these later  (written 12-3-19)
+
+
+
         // get a reference to the RelativeLayout so we can change the background
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
@@ -54,9 +56,10 @@ public class Auto extends LinearOpMode {
         // Choosing the team color
         telemetry.addData("Press X for Blue, B for Red", "");
         telemetry.update();
-        // TODO: What will go in this while loop?
+
         while (!gamepad1.x && !gamepad1.b) {
         }
+        //This sets the strips of lights and the screen of the phones to the team color
         if (gamepad1.x) {
             teamcolor = blue;
             // Set the panel back to the default color
@@ -107,13 +110,19 @@ public class Auto extends LinearOpMode {
 
         //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         if (task == stones) {
-            double bothYellow = 1;
+            double bothYellow = 2;
+            double grabPrepPhase = 0;
             double scanPhase = 0;
+            double grabPhase = 0;
 
-
+            robot.liftMotor.setPower(-1);
+            while (robot.liftMotor.getCurrentPosition() > -2000) {
+                    //do nothing}
+                }
+            robot.liftMotor.setPower(0.0);
 
             driveForward();
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) {
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance - 20) && opModeIsActive()) {
                 telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 // Rev2mDistanceSensor specific methods.
                 telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
@@ -124,70 +133,136 @@ public class Auto extends LinearOpMode {
             }
             scanPhase = 1;
             stopDriving();
+            sleep(100);
             //telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
             //telemetry.update();
 
-            while(scanPhase == 1 && bothYellow == 1) {
 
 
-                if ((robot.colorSensorL.alpha() > 45) && (robot.colorSensorR.alpha() > 45)) {
+            while(scanPhase == 1 && (robot.colorSensorL.alpha() > 30) && (robot.colorSensorR.alpha() > 30)) {
+              //  strafeRight(.3);   ///ALL STRAFES ARE INVERTED IN AUTONOMOUS
+                        //STRAFE RIGHT IN THE AUTONOMOUS CODE IS STRAFE LEFT IN REAL LIFE
+                        //sorry for the all caps, it's just important
+                        //-Love, Graham
+                //sleep(100);
+            //We may need to change the alpha values to get consistent readings
+                if ((robot.colorSensorL.alpha() > 30) && (robot.colorSensorR.alpha() > 30)) {
+                    bothYellow = 1;
+                }
+                //The next two are just extra cases if it isn't reading properly
+                if ((robot.colorSensorL.alpha() < 30) && (robot.colorSensorR.alpha() > 30)) {
+                    bothYellow = 1;
+                }
+                if ((robot.colorSensorL.alpha() > 30) && (robot.colorSensorR.alpha() < 30)) {
                     bothYellow = 1;
                 }
 
-                if ((robot.colorSensorL.alpha() < 45) && (robot.colorSensorR.alpha() > 45)) {
-                    bothYellow = 1;
-                }
-                if ((robot.colorSensorL.alpha() > 45) && (robot.colorSensorR.alpha() < 45)) {
-                    bothYellow = 1;
-                }
-
-                if ((robot.colorSensorL.alpha() < 45) && (robot.colorSensorR.alpha() < 45)) {
+                // If it's black then bothYellow is false
+                if ((robot.colorSensorL.alpha() < 30) && (robot.colorSensorR.alpha() < 30)) {
                     bothYellow = 0;
                 }
 
-                telemetry.addData("leftVal = ","leftVal = " + robot.colorSensorL.alpha());
-                telemetry.addData("rightVal = ","rightVal = " + robot.colorSensorR.alpha());
+                //telemetry.addData("leftVal = ","leftVal = " + robot.colorSensorL.alpha());
+                //telemetry.addData("rightVal = ","rightVal = " + robot.colorSensorR.alpha());
                 telemetry.addData("bothYellowVal: ", "Yellow State: " + bothYellow);
                 telemetry.update();
 
 
-
-                if (bothYellow == 0) {
+                if (bothYellow == 0) { //breaks the scan phase loop
 
                    telemetry.addData("SICK","I SEE A SKYSTONE");
                    telemetry.update();
-                   //scanPhase = 0;
-
+                   scanPhase = 0;
+                   grabPrepPhase = 1;
 
                 }
             }
 
+            while(grabPrepPhase == 1){
+                driveBackwards();
+                while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance - 50) && opModeIsActive()){
+
+                }
+                stopDriving();
+
+                robot.liftMotor.setPower(1);
+                while (robot.liftMotor.getCurrentPosition() < 0) {
+                }
+                robot.liftMotor.setPower(0.0);
+
+                grabPrepPhase = 0;
+                grabPhase = 1;
+            }
+
+            while(grabPhase == 1){
+                stopDriving();
+                telemetry.addData("I stop","I have entered the Grab Phase");
+                telemetry.update();
+            }
 
 
 
 
 
         }
-        if(task == mat){
-            driveForward();
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drivetomat
-            {
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        if((task == mat) && (teamcolor == 2)){
+            driveForward();
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
+            {
             }
             stopDriving();
             lastTime= runtime.milliseconds();
-            strafeLeft(.3);
+            strafeLeft(.3); //this actually makes it go right toward the center of the mat
             while (runtime.milliseconds()<lastTime+1000){
 
             }
             stopDriving();
             robot.matServoL.setPosition(freePos);
             robot.matServoR.setPosition(grabPos);
-            sleep(1000);
+            sleep(1000); //We can edit this delay based on it we need more time or not
             //grabmat
             //drivebacktowall
             //releasemat
             //gotored
+            driveBackwards();
+
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 200) && opModeIsActive()) //drivetomat
+            {
+                telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
+                telemetry.update();
+            }
+            stopDriving();
+            robot.matServoL.setPosition(grabPos);
+            robot.matServoR.setPosition(freePos);
+            sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
+
+            strafeRight(.6); //Actually left towards the skybridge
+            //Senses the red tape under the skybridge and tells the robot to stop
+            while (robot.colorSensorDown.red()<30&& opModeIsActive()) {
+                telemetry.addData("Red  ", robot.colorSensorDown.red());
+                telemetry.update();
+            }
+            stopDriving();
+        }
+
+        //BLUE SIDE sorry for the caps lol
+        if((task == mat) && (teamcolor == 1)){
+            driveForward();
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
+            {
+            }
+            stopDriving();
+            lastTime= runtime.milliseconds();
+            strafeRight(.3); //this actually makes it go right toward the center of the mat
+            while (runtime.milliseconds()<lastTime+1000){
+
+            }
+            stopDriving();
+            robot.matServoL.setPosition(freePos);
+            robot.matServoR.setPosition(grabPos);
+            sleep(1000); //We can edit this delay based on it we need more time or not
 
             driveBackwards();
 
@@ -199,16 +274,34 @@ public class Auto extends LinearOpMode {
             stopDriving();
             robot.matServoL.setPosition(grabPos);
             robot.matServoR.setPosition(freePos);
-            sleep(1000);
+            sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
 
-            strafeRight(.6);
-            while (robot.colorSensorDown.red()<30&& opModeIsActive()) {
-                telemetry.addData("Red  ", robot.colorSensorDown.red());
+            strafeLeft(.6); //Actually left towards the skybridge
+            //Senses the BLUE tape under the skybridge and tells the robot to stop
+            while (robot.colorSensorDown.blue()<30&& opModeIsActive()) {
+                telemetry.addData("Blue  ", robot.colorSensorDown.blue());
                 telemetry.update();
             }
             stopDriving();
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //TODO What does this part do? It isn't in the same spot as the other things with sensing skystones
         while (opModeIsActive()) {
             telemetry.addData("Alpha", robot.colorSensorL.alpha());
             telemetry.addData("Red  ", robot.colorSensorDown.red());
@@ -304,12 +397,13 @@ public class Auto extends LinearOpMode {
     }
 
     void outAndBack() {
-        strafeLeft(3);
+        strafeLeft(3); //Out from the parking tape under the skybridge
         sleep(1000);
         stopDriving();
-        //robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
+        robot.clawServo.setPosition(1);    //Claw servo in the open position
         stopDriving();
-        strafeRight(0.6);
+        strafeRight(0.6);  //Back to the parking tape under the skybridge
+        //Stop at the red tape
         while (robot.colorSensorDown.red()<30 && opModeIsActive() ) {
 
         }

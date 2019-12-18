@@ -111,7 +111,7 @@ public class BACONbotMechanum extends LinearOpMode {
         double backRight;
         double max;
         double step = 0.2;
-        double interval = 150;
+        double interval = 75;
         double lastSpeedTime = runtime.milliseconds();
 
         // run until the end of the match (driver presses STOP)
@@ -145,9 +145,9 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
                 frontLeft = getRampPower(frontLeft, robot.frontLeftMotor.getPower(), step);
-                frontRight = getRampPower(frontRight, robot.frontRightMotor.getPower(), step);
+                frontRight = getRampPower(-frontRight, -robot.frontRightMotor.getPower(), step);
                 backLeft = getRampPower(backLeft, robot.backLeftMotor.getPower(), step);
-                backRight = getRampPower(backRight, robot.backRightMotor.getPower(), step);
+                backRight = getRampPower(-backRight, -robot.backRightMotor.getPower(), step);
 
                 frontRight = -frontRight;
                 backRight = - backRight;
@@ -249,12 +249,11 @@ public class BACONbotMechanum extends LinearOpMode {
             if (gamepad1.x) {
 
 
-
                 if (sp == 0) {
                     robot.clawServo.setPosition(1);
                     relativeLayout.post(new Runnable() {
                         public void run(){
-                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
+                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
                             robot.blinkinLedDriver.setPattern(robot.pattern);
                 }
                         });
@@ -266,7 +265,7 @@ public class BACONbotMechanum extends LinearOpMode {
                     robot.clawServo.setPosition(0);
                     relativeLayout.post(new Runnable() {
                         public void run(){
-                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
                             robot.blinkinLedDriver.setPattern(robot.pattern);
                         }
                     });
