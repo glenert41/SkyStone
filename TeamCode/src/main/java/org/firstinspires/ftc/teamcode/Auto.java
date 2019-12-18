@@ -330,7 +330,7 @@ public class Auto extends LinearOpMode {
  while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance + 20) {
  driveBackwards();
  }
- //pick up skystone
+ //pick up skystone //test
  stopDriving();
  robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
  while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
