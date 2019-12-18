@@ -247,6 +247,9 @@ public class Auto extends LinearOpMode {
             stopDriving();
         }
 
+
+
+
         //BLUE SIDE sorry for the caps lol
         if((task == mat) && (teamcolor == 1)){
             driveForward();
