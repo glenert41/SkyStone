@@ -70,6 +70,7 @@ public class HardwareBACONbot
     public Servo    clawServo = null;
     public Servo    matServoL = null;
     public Servo    matServoR = null;
+    public Servo    capstoneServo = null;
     public RevBlinkinLedDriver blinkinLedDriver;
     public RevBlinkinLedDriver.BlinkinPattern pattern;
 
@@ -109,6 +110,7 @@ public class HardwareBACONbot
         colorSensorR = hwMap.get(ColorSensor.class, "colR"); //hub1 port 2
         colorSensorDown = hwMap.get(ColorSensor.class, "colD"); //hub1 port 3
         clawServo = hwMap.servo.get("claw"); //H1P5
+        capstoneServo = hwMap.servo.get("capstone"); //H1P3
 
         matServoL = hwMap.servo.get("matL");
         matServoR = hwMap.servo.get("matR");

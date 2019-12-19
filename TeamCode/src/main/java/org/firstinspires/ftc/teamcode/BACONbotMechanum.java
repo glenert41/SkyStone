@@ -273,12 +273,32 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
 
             }
+            //Capstone Servo
+            double capstone;
+            capstone = robot.capstoneServo.getPosition();
+
+            if (gamepad1.y) {
+
+
+                if (capstone == 0) {
+                    robot.capstoneServo.setPosition(1);
+                    sleep(500);
+                }
+
+
+                if (capstone == 1) {
+                    robot.capstoneServo.setPosition(0);
+                    sleep(500);
+                }
+
+            }
 
 
 
 
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
             telemetry.addData("Right Snesor", "Alpha:" + robot.colorSensorR.alpha());
+            telemetry.addData("Blue  ", robot.colorSensorDown.blue());
             telemetry.update();
 
 

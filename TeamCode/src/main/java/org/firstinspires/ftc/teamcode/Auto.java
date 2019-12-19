@@ -122,7 +122,7 @@ public class Auto extends LinearOpMode {
             robot.liftMotor.setPower(0.0);
 
             driveForward();
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance - 20) && opModeIsActive()) {
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) < 640) && opModeIsActive()) {
                 telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 // Rev2mDistanceSensor specific methods.
                 telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
@@ -174,6 +174,13 @@ public class Auto extends LinearOpMode {
                    telemetry.update();
                    scanPhase = 0;
                    grabPrepPhase = 1;
+                   relativeLayout.post(new Runnable() {
+                        public void run() {
+                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                            robot.blinkinLedDriver.setPattern(robot.pattern);
+                        }
+                    });
+
 
                 }
             }
@@ -258,7 +265,7 @@ public class Auto extends LinearOpMode {
             }
             stopDriving();
             lastTime= runtime.milliseconds();
-            strafeRight(.3); //this actually makes it go right toward the center of the mat
+            strafeRight(.3); //this actually makes it go left toward the center of the mat
             while (runtime.milliseconds()<lastTime+1000){
 
             }
@@ -269,7 +276,7 @@ public class Auto extends LinearOpMode {
 
             driveBackwards();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 200) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 150) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
@@ -279,7 +286,7 @@ public class Auto extends LinearOpMode {
             robot.matServoR.setPosition(freePos);
             sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
 
-            strafeLeft(.6); //Actually left towards the skybridge
+            strafeLeft(.6); //Actually right towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
             while (robot.colorSensorDown.blue()<30&& opModeIsActive()) {
                 telemetry.addData("Blue  ", robot.colorSensorDown.blue());
@@ -306,8 +313,8 @@ public class Auto extends LinearOpMode {
 
         //TODO What does this part do? It isn't in the same spot as the other things with sensing skystones
         while (opModeIsActive()) {
-            telemetry.addData("Alpha", robot.colorSensorL.alpha());
-            telemetry.addData("Red  ", robot.colorSensorDown.red());
+            //telemetry.addData("Alpha", robot.colorSensorL.alpha());
+            //telemetry.addData("Red  ", robot.colorSensorDown.red());
             if ((robot.colorSensorL.alpha() < 40) && (robot.colorSensorR.alpha() < 40))
                 telemetry.addData("Skystone", 1);
             else
