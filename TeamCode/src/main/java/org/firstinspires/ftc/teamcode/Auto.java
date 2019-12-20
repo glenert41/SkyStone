@@ -148,13 +148,16 @@ public class Auto extends LinearOpMode {
             //We may need to change the alpha values to get consistent readings
                 if ((robot.colorSensorL.alpha() > 30) && (robot.colorSensorR.alpha() > 30)) {
                     bothYellow = 1;
+                    //both are yellow or air
                 }
                 //The next two are just extra cases if it isn't reading properly
                 if ((robot.colorSensorL.alpha() < 30) && (robot.colorSensorR.alpha() > 30)) {
                     bothYellow = 1;
+                    //left is black and right is yellow or air
                 }
                 if ((robot.colorSensorL.alpha() > 30) && (robot.colorSensorR.alpha() < 30)) {
                     bothYellow = 1;
+                    //left is yellow or air and right is black
                 }
 
                 // If it's black then bothYellow is false
