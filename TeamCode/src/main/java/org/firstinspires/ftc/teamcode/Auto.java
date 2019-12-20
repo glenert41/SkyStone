@@ -122,7 +122,7 @@ public class Auto extends LinearOpMode {
             robot.liftMotor.setPower(0.0);
 
             driveForward();
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) < 640) && opModeIsActive()) {
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) < 675) && opModeIsActive()) {
                 telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 // Rev2mDistanceSensor specific methods.
                 telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
@@ -139,8 +139,8 @@ public class Auto extends LinearOpMode {
 
 
 
-            while(scanPhase == 1 && (robot.colorSensorL.alpha() > 30) && (robot.colorSensorR.alpha() > 30)) {
-              //  strafeRight(.3);   ///ALL STRAFES ARE INVERTED IN AUTONOMOUS
+            while(scanPhase == 1 /*&& (robot.colorSensorL.alpha() > 30) && (robot.colorSensorR.alpha() > 30)*/) {
+                strafeRight(.3);   ///ALL STRAFES ARE INVERTED IN AUTONOMOUS
                         //STRAFE RIGHT IN THE AUTONOMOUS CODE IS STRAFE LEFT IN REAL LIFE
                         //sorry for the all caps, it's just important
                         //-Love, Graham
@@ -190,7 +190,7 @@ public class Auto extends LinearOpMode {
 
             while(grabPrepPhase == 1){
                 driveBackwards();
-                while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance - 50) && opModeIsActive()){
+                while ((robot.backDistance.getDistance(DistanceUnit.MM) > 625) && opModeIsActive()){
 
                 }
                 stopDriving();
@@ -206,8 +206,13 @@ public class Auto extends LinearOpMode {
 
             while(grabPhase == 1){
                 stopDriving();
+                driveForward();
+                while ((robot.backDistance.getDistance(DistanceUnit.MM) < 675) && opModeIsActive()){
+
+                }
                 telemetry.addData("I stop","I have entered the Grab Phase");
                 telemetry.update();
+                robot.clawServo.setPosition(1);
             }
 
 
