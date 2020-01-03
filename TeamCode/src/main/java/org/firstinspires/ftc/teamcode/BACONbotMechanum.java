@@ -172,16 +172,16 @@ public class BACONbotMechanum extends LinearOpMode {
             //Raise and Lower Lift Motor (Manual)
             //Left Bumper = Up
             //Right Bumper = Down
-            if (gamepad1.right_bumper && robot.liftMotor.getCurrentPosition() < 0) {
+            if (gamepad2.right_bumper && robot.liftMotor.getCurrentPosition() < 0) {
                 robot.liftMotor.setPower(1); //down
-            } else if (gamepad1.left_bumper && robot.liftMotor.getCurrentPosition() > -18000) {
+            } else if (gamepad2.left_bumper && robot.liftMotor.getCurrentPosition() > -18000) {
                 robot.liftMotor.setPower(-1);  //up
             } else {
                 robot.liftMotor.setPower(0);
             }
 
             //Goes to 1st Block Level
-            if (gamepad1.a) {
+            if (gamepad2.a) {
                 robot.liftMotor.setPower(-1);
                 while (robot.liftMotor.getCurrentPosition() > -2000) {
                     //do nothing}
@@ -190,7 +190,7 @@ public class BACONbotMechanum extends LinearOpMode {
             }
 
             //Goes to Ground Block Level
-            if (gamepad1.b) {
+            if (gamepad2.b) {
                 robot.liftMotor.setPower(1);
                 while (robot.liftMotor.getCurrentPosition() < 0) {
                 }
@@ -246,7 +246,7 @@ public class BACONbotMechanum extends LinearOpMode {
             double sp;
             sp = robot.clawServo.getPosition();
 
-            if (gamepad1.x) {
+            if (gamepad2.x) {
 
 
                 if (sp == 0) {
@@ -277,7 +277,7 @@ public class BACONbotMechanum extends LinearOpMode {
             double capstone;
             capstone = robot.capstoneServo.getPosition();
 
-            if (gamepad1.y) {
+            if (gamepad2.y) {
 
 
                 if (capstone == 0) {
@@ -295,12 +295,17 @@ public class BACONbotMechanum extends LinearOpMode {
 
 
 
-
+            /*
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
             telemetry.addData("Right Snesor", "Alpha:" + robot.colorSensorR.alpha());
             telemetry.addData("Blue  ", robot.colorSensorDown.blue());
             telemetry.update();
+            */
 
+            telemetry.addData("FrontLeft:", frontLeft);
+            telemetry.addData("FrontRight", frontRight);
+            telemetry.addData("BackLeft", backLeft);
+            telemetry.addData("BackRight", backRight);
 
 
 
