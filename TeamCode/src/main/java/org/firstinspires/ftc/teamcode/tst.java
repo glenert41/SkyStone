@@ -27,13 +27,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -54,8 +53,8 @@ import java.util.Locale;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  */
 @TeleOp(name = "Sensor: REVColorDistance", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
-public class SensorREVColorDistance extends LinearOpMode {
+//@Disabled                            // Comment this out to add to the opmode list
+public class tst extends LinearOpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
@@ -88,14 +87,9 @@ public class SensorREVColorDistance extends LinearOpMode {
      */
     ColorSensor sensorColor;
     DistanceSensor sensorDistance;
-    RevBlinkinLedDriver blinkinLedDriver;
-    RevBlinkinLedDriver.BlinkinPattern pattern;
 
     @Override
     public void runOpMode() {
-
-
-        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
 
         // get a reference to the color sensor.
         sensorColor = hardwareMap.get(ColorSensor.class, "colL");
@@ -117,13 +111,6 @@ public class SensorREVColorDistance extends LinearOpMode {
         // color of the Robot Controller app to match the hue detected by the RGB sensor.
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
-
-        relativeLayout.post(new Runnable() {
-            public void run() {
-                pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
-            }
-        });
 
         // wait for the start button to be pressed.
         waitForStart();

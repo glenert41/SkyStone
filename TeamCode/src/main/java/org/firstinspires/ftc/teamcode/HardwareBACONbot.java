@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -62,8 +63,11 @@ public class HardwareBACONbot
     public DcMotor liftMotor = null;
 
     public DistanceSensor backDistance = null;
+    public DistanceSensor frontDistance = null;
 
     public ColorSensor colorSensorL = null; //Adding in a color sensor for the blocks
+    public DistanceSensor sensorDistanceL = null;
+    public DistanceSensor sensorDistanceR = null;
     public ColorSensor colorSensorR = null; //Adding in a color sensor for the blocks
     public ColorSensor colorSensorDown = null;
 
@@ -75,6 +79,8 @@ public class HardwareBACONbot
     public RevBlinkinLedDriver.BlinkinPattern pattern;
 
 
+
+    public BNO055IMU imu;
 
 
 
@@ -103,10 +109,12 @@ public class HardwareBACONbot
         liftMotor = hwMap.dcMotor.get("LM"); // Hub 2 Port 0
 
         backDistance = hwMap.get(DistanceSensor.class, "bsr"); //hub2 port 1
-
+        frontDistance = hwMap.get(DistanceSensor.class, "fsr"); //hub2 port 2
 
 
         colorSensorL = hwMap.get(ColorSensor.class, "colL");  //hub1 port 1
+        sensorDistanceL = hwMap.get(DistanceSensor.class, "colL");
+        sensorDistanceR = hwMap.get(DistanceSensor.class, "colR");
         colorSensorR = hwMap.get(ColorSensor.class, "colR"); //hub1 port 2
         colorSensorDown = hwMap.get(ColorSensor.class, "colD"); //hub1 port 3
         clawServo = hwMap.servo.get("claw"); //H1P5
@@ -162,6 +170,26 @@ public class HardwareBACONbot
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Set up the parameters with which we will use our IMU. Note that integration
+        // algorithm here just reports accelerations to the logcat log; it doesn't actually
+        // provide positional information.
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        imu = hwMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+
+
+
     }
 
 

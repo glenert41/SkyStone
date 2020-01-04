@@ -48,6 +48,7 @@ public class AutoTest extends LinearOpMode {
         float grabPos = 0;  //change these later (written 12-3-19)
         float freePos = 1;  //change these later  (written 12-3-19)
 
+
         // State used for updating telemetry
         Orientation angles;
         Acceleration gravity;
@@ -194,8 +195,8 @@ public class AutoTest extends LinearOpMode {
 
             strafeLeft(.3); //Actually left towards the skybridge
             //Senses the red tape under the skybridge and tells the robot to stop
-            while (robot.colorSensorDown.alpha() < 46 && opModeIsActive()) {
-                telemetry.addData("Alpha  ", robot.colorSensorDown.alpha());
+            while (robot.colorSensorDown.red() < 12 && opModeIsActive()) {
+                telemetry.addData("Red  ", robot.colorSensorDown.red());
                 telemetry.update();
             }
             stopDriving();
@@ -307,6 +308,7 @@ public class AutoTest extends LinearOpMode {
         robot.backLeftMotor.setPower(-0.5);
         robot.backRightMotor.setPower(0.5);
     }
+
     //Drive Backwards - Used for starting the game
     void driveBackwardsSlow() {
         robot.frontLeftMotor.setPower(-0.3);
@@ -395,7 +397,7 @@ public class AutoTest extends LinearOpMode {
         driveBackwardsSlow();
 
         //Stop at the red tape
-        while (robot.colorSensorDown.alpha() < 46 && opModeIsActive()) {
+        while (robot.colorSensorDown.red() > 12 && opModeIsActive()) {
 
         }
         stopDriving();
@@ -406,6 +408,14 @@ public class AutoTest extends LinearOpMode {
         boolean bothYellow = true;
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+                robot.blinkinLedDriver.setPattern(robot.pattern);
+            }
+        });
+
         if (color == 2) {
             strafeRight(.25);
         }
@@ -419,8 +429,8 @@ public class AutoTest extends LinearOpMode {
         //-Love, Graham
         //sleep(100);
         //We may need to change the alpha values to get consistent readings
-        while (bothYellow == true) {
-            int skyStoneThreshold = 40;
+        while ((bothYellow == true) && opModeIsActive()) {
+            int skyStoneThreshold = 250;
             if ((robot.colorSensorL.alpha() > skyStoneThreshold) && (robot.colorSensorR.alpha() > skyStoneThreshold)) {
                 bothYellow = true;
                 //both are yellow or air
@@ -463,7 +473,7 @@ public class AutoTest extends LinearOpMode {
 
     void raiseClaw() {
         robot.liftMotor.setPower(-1);
-        while (robot.liftMotor.getCurrentPosition() > -2500) {
+        while ((robot.liftMotor.getCurrentPosition() > -2500) && opModeIsActive()) {
             //do nothing}
         }
         robot.liftMotor.setPower(0.0);
@@ -471,7 +481,7 @@ public class AutoTest extends LinearOpMode {
 
     void lowerClaw() {
         robot.liftMotor.setPower(1);
-        while (robot.liftMotor.getCurrentPosition() < 0) {
+        while ((robot.liftMotor.getCurrentPosition() < 0) && opModeIsActive()) {
         }
         robot.liftMotor.setPower(0.0);
     }
@@ -479,20 +489,10 @@ public class AutoTest extends LinearOpMode {
     void positionRobot() {
         driveForward();
 
-
-        while (Double.isNaN(robot.sensorDistanceL.getDistance(DistanceUnit.MM)) && opModeIsActive()) {
-            //telemetry.addData("Status", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
-            // Rev2mDistanceSensor specific methods.
-            //TODO Is this important to print?
-            //telemetry.addData("ID", String.format("%x", sensorTimeOfFlight.getModelID()));
-            //telemetry.addData("did time out", Boolean.toString(sensorTimeOfFlight.didTimeoutOccur()));
-            //telemetry.update();
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 60) && opModeIsActive()) {
 
         }
-        stopDriving();
-        sleep(100);
-        //telemetry.addData("got there", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
-        //telemetry.update();
+
     }
 
     void grabPrep() {
@@ -554,7 +554,7 @@ public class AutoTest extends LinearOpMode {
         driveForward();  //Back to the parking tape under the skybridge
         //Stop at the blue tape
         //TODO create a blue version of the red check
-        while (robot.colorSensorDown.alpha() < 46 && opModeIsActive()) {
+        while (robot.colorSensorDown.red() > 12 && opModeIsActive()) {
             sleep(10);
         }
         stopDriving();
@@ -573,7 +573,7 @@ public class AutoTest extends LinearOpMode {
 
 
         rotateRight(speed);
-        while (angles.angleUnit.DEGREES.normalize(angles.firstAngle) > heading) {
+        while ((angles.angleUnit.DEGREES.normalize(angles.firstAngle) > heading) && opModeIsActive()) {
             angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
             telemetry.update();
@@ -590,6 +590,7 @@ public class AutoTest extends LinearOpMode {
         robot.backRightMotor.setPower(speed);
 
     }
+
     void rotateL(double heading, double speed) {
 
         Orientation angles;
@@ -601,7 +602,7 @@ public class AutoTest extends LinearOpMode {
 
 
         rotateLeft(-speed);
-        while (angles.angleUnit.DEGREES.normalize(angles.firstAngle) < heading) {
+        while ((angles.angleUnit.DEGREES.normalize(angles.firstAngle) < heading) && opModeIsActive()) {
             angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
             telemetry.update();

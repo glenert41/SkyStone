@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -53,14 +53,14 @@ import java.util.Locale;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Sensor: REVColorDistance", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
-public class SensorREVColorDistance extends LinearOpMode {
+@TeleOp(name = "NewColorDistance", group = "Sensor")
+//@Disabled                            // Comment this out to add to the opmode list
+public class NewSensorREVColorDistance extends LinearOpMode {
 
     /**
      * Note that the REV Robotics Color-Distance incorporates two sensors into one device.
      * It has an IR proximity sensor which is used to calculate distance and an RGB color sensor.
-     * 
+     *
      * There will be some variation in the values measured depending on whether you are using a
      * V3 color sensor versus the older V2 and V1 sensors, as the V3 is based around a different chip.
      *

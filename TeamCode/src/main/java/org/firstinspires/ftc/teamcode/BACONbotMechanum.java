@@ -44,6 +44,11 @@ public class BACONbotMechanum extends LinearOpMode {
     int teamcolor = 0; // 1 = Blue 2 = Red
     int blue = 1;
     int red = 2;
+    int STOPPED = 1;
+    int MOVINGUP = 2;
+    int MOVINGDOWN = 3;
+    int liftState = STOPPED;
+
 
 
     @Override
@@ -86,6 +91,8 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
             });
         }
+
+        robot.capstoneServo.setPosition(.5);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -180,8 +187,29 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.liftMotor.setPower(0);
             }
 
+
+            if(gamepad2.a) {
+                liftState = MOVINGUP;
+                robot.liftMotor.setPower(-1);
+            }
+            if(liftState == MOVINGUP && (robot.liftMotor.getCurrentPosition() < -2000)){
+                robot.liftMotor.setPower(0);
+                liftState = STOPPED;
+            }
+
+            if(gamepad2.b) {
+                liftState = MOVINGDOWN;
+                robot.liftMotor.setPower(1);
+            }
+            if(liftState == MOVINGDOWN && (robot.liftMotor.getCurrentPosition() > 0)){
+                robot.liftMotor.setPower(0);
+                liftState = STOPPED;
+            }
+
+
+
             //Goes to 1st Block Level
-            if (gamepad2.a) {
+          /*  if (gamepad2.a) {
                 robot.liftMotor.setPower(-1);
                 while (robot.liftMotor.getCurrentPosition() > -2000) {
                     //do nothing}
@@ -195,7 +223,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 while (robot.liftMotor.getCurrentPosition() < 0) {
                 }
                 robot.liftMotor.setPower(0.0);
-            }
+            }*/
 
             //matServo Servo Position
             double spL;
@@ -280,17 +308,18 @@ public class BACONbotMechanum extends LinearOpMode {
             if (gamepad2.y) {
 
 
-                if (capstone == 0) {
+                if (capstone == .5) {
                     robot.capstoneServo.setPosition(1);
                     sleep(500);
                 }
 
 
                 if (capstone == 1) {
-                    robot.capstoneServo.setPosition(0);
+                    robot.capstoneServo.setPosition(.5);
                     sleep(500);
                 }
-
+                telemetry.addData("Capstone Servo Position", robot.capstoneServo.getPosition());
+                telemetry.update();
             }
 
 
