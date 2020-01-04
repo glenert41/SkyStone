@@ -430,7 +430,7 @@ public class AutoTest extends LinearOpMode {
         //sleep(100);
         //We may need to change the alpha values to get consistent readings
         while ((bothYellow == true) && opModeIsActive()) {
-            int skyStoneThreshold = 250;
+            int skyStoneThreshold = 100;
             if ((robot.colorSensorL.alpha() > skyStoneThreshold) && (robot.colorSensorR.alpha() > skyStoneThreshold)) {
                 bothYellow = true;
                 //both are yellow or air
@@ -489,7 +489,7 @@ public class AutoTest extends LinearOpMode {
     void positionRobot() {
         driveForward();
 
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 60) && opModeIsActive()) {
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 70) && opModeIsActive()) {
 
         }
 
