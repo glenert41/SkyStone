@@ -235,7 +235,7 @@ public class BACONbotMechanum extends LinearOpMode {
             //Grab mat
             //Down D-pad - Grab
             //Up D-pad - Free
-            /*if (gamepad1.dpad_down){
+            if (gamepad1.dpad_down){
                 robot.matServoL.setPosition(spL+.1);
                 robot.matServoR.setPosition(spR-.1);
             }
@@ -243,7 +243,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.matServoL.setPosition(spL-.1);
                 robot.matServoR.setPosition(spR+.1);
             }
-            */
+
 
             double GrabPos = 1;
             double FreePos = 0;
@@ -369,62 +369,6 @@ public class BACONbotMechanum extends LinearOpMode {
 
     // Functions --------------------------------------
 
-
-    //Driving Functions
-
-    //Stop Driving - Kill power to all the motors
-    void stopDriving() {
-
-        robot.frontLeftMotor.setPower(0);
-        robot.frontRightMotor.setPower(0);
-        robot.backLeftMotor.setPower(0);
-        robot.backRightMotor.setPower(0);
-
-
-    }
-
-    //Drive Backwards - Used for starting the game
-    void driveBackwards() {
-        robot.frontLeftMotor.setPower(-0.5);
-        robot.frontRightMotor.setPower(0.5);
-        robot.backLeftMotor.setPower(-0.5);
-        robot.backRightMotor.setPower(0.5);
-
-    }
-
-    //Drive Forwards - Towards where the Backsensor is facing
-    void driveForward() {
-        robot.frontLeftMotor.setPower(0.5);
-        robot.frontRightMotor.setPower(-0.5);
-        robot.backLeftMotor.setPower(0.5);
-        robot.backRightMotor.setPower(-0.5);
-    }
-
-    //Strafe Left - (used to strafe towards the center line for parking)
-    void strafeLeft(double pwr) {  //added int pwr to reduce initial power
-        robot.frontLeftMotor.setPower(pwr);
-        robot.backRightMotor.setPower(-pwr); //Changing the order in which the wheels start
-        robot.frontRightMotor.setPower(pwr);
-        robot.backLeftMotor.setPower(-pwr);
-
-    }
-
-    void strafeRight(double pwr) {  //added int pwr to reduce initial power
-        robot.frontLeftMotor.setPower(-pwr);
-        robot.backRightMotor.setPower(pwr); //Changing the order in which the wheels start
-        robot.frontRightMotor.setPower(-pwr);
-        robot.backLeftMotor.setPower(pwr);
-
-    }
-
-    void outAndBack() {
-        strafeLeft(3);
-        //TimeUnit.SECONDS.sleep(1);
-        stopDriving();
-        // robot.clawServo.setPosition(1);        //UPDATE THIS NUMBER TO WHATEVER freePOS is
-        stopDriving();
-        strafeRight(3);
-    }
 
     double getRampPower(double t, double a, double step) {
         double delta;
