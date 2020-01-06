@@ -98,10 +98,10 @@ public class NewSensorREVColorDistance extends LinearOpMode {
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
 
         // get a reference to the color sensor.
-        sensorColor = hardwareMap.get(ColorSensor.class, "colL");
+        sensorColor = hardwareMap.get(ColorSensor.class, "colD");
 
         // get a reference to the distance sensor that shares the same name.
-        sensorDistance = hardwareMap.get(DistanceSensor.class, "colL");
+        sensorDistance = hardwareMap.get(DistanceSensor.class, "colD");
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
         float hsvValues[] = {0F, 0F, 0F};

@@ -135,10 +135,10 @@ public class HardwareBACONbot
         //     when positive power is applied
 
         //  *****if the above assumption is incorrect uncomment these lines
-        //frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        //frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        //backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
-        //backRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotor.Direction.REVERSE);
+        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
         frontLeftMotor.setPower(0);

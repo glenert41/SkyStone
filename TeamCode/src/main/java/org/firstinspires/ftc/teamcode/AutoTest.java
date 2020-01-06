@@ -33,8 +33,11 @@ import java.util.Locale;
 public class AutoTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     HardwareBACONbot robot = new HardwareBACONbot();   // Use BACONbot's hardware
-//Trying this again
-
+    // === DEFINE CONSTANTS HERE! ===
+    double STRAFE_SPEED = 0.2;
+    double FAST_SPEED = 1.0;
+    double SLOW_SPEED = 0.3;
+    // ==============================
     public void runOpMode() {
         int teamcolor = 0; // 1 = Blue 2 = Red
         int blue = 1;
@@ -139,7 +142,8 @@ public class AutoTest extends LinearOpMode {
 
         }
         if ((task == stones) && (teamcolor == blue)) {
-
+            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
             raiseClaw();
             //This gets the robot in the proper place to sense the Skystones
@@ -328,10 +332,10 @@ public class AutoTest extends LinearOpMode {
 
     //Drive Forwards - Towards where the Backsensor is facing
     void driveForwardSlow() {
-        robot.frontLeftMotor.setPower(0.3);
-        robot.backLeftMotor.setPower(0.3);
-        robot.backRightMotor.setPower(-0.3);
-        robot.frontRightMotor.setPower(-0.3);
+        robot.frontLeftMotor.setPower(0.2);
+        robot.backLeftMotor.setPower(0.2);
+        robot.backRightMotor.setPower(-0.2);
+        robot.frontRightMotor.setPower(-0.2);
     }
 
     //Strafe Left - (used to strafe towards the center line for parking)
@@ -417,10 +421,10 @@ public class AutoTest extends LinearOpMode {
         });
 
         if (color == 2) {
-            strafeRight(.25);
+            strafeRight(STRAFE_SPEED);
         }
         if (color == 1) {
-            strafeLeft(.25);
+            strafeLeft(STRAFE_SPEED);
         }
 
         ///ALL STRAFES ARE INVERTED IN AUTONOMOUS
@@ -487,9 +491,9 @@ public class AutoTest extends LinearOpMode {
     }
 
     void positionRobot() {
-        driveForward();
+        driveForwardSlow();
         //TODO: Get a more accurate distance
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 70) && opModeIsActive()) {
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 140) && opModeIsActive()) {
 
         }
 
@@ -551,11 +555,14 @@ public class AutoTest extends LinearOpMode {
 
 
     void parkStonesBlue() {
-        driveForward();  //Back to the parking tape under the skybridge
+        driveForwardSlow();  //Back to the parking tape under the skybridge
         //Stop at the blue tape
         //TODO create a blue version of the red check
-        while (robot.colorSensorDown.red() > 12 && opModeIsActive()) {
+        while (robot.colorSensorDown.blue() < 22 && opModeIsActive()) {
             sleep(10);
+            telemetry.addData("parking Blue  ", robot.colorSensorDown.red());
+            telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
+            telemetry.update();
         }
         stopDriving();
         sleep(500);

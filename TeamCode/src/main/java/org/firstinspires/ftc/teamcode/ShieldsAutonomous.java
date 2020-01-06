@@ -64,14 +64,14 @@ public class ShieldsAutonomous extends LinearOpMode {
     // start calibrating the gyro.
         telemetry.addData(">", "Gyro Calibrating. Do Not move!");
         telemetry.update();
-        robot.gyro1.calibrate();
+        /*robot.gyro1.calibrate();
 
         // make sure the gyro is calibrated.
         while (robot.gyro1.isCalibrating()) {
             Thread.sleep(50);
             idle();
         }
-
+*/
         telemetry.addData(">", "Gyro Calibrated.  Press Start.");
         telemetry.update();
         // Send telemetry message to signify robot waiting;
@@ -81,11 +81,11 @@ public class ShieldsAutonomous extends LinearOpMode {
         waitForStart();
         // == My fancy Autonomous code ==
         // put the sensor up
-        robot.opticalServo.setPosition(0);
+        //robot.opticalServo.setPosition(0);
         // go toward the wall until you see the wall
         headingPowerTime(225, 0.4, 4, 0.02);
         // put the sensor down
-        robot.opticalServo.setPosition(.53);
+        //robot.opticalServo.setPosition(.53);
         //sleep(200);
         // strafe to the white line
         headingPowerTime(180, 0.4, 4, 0.04);
@@ -145,7 +145,7 @@ public class ShieldsAutonomous extends LinearOpMode {
         double headingRads = Math.toRadians(heading);
         double x = power*Math.cos(headingRads);
         double y = power*Math.sin(headingRads);
-        robotHeading = robot.gyro1.getHeading();
+        //robotHeading = robot.gyro1.getHeading();
         headingError = robotHeading - targetHeading;
         double r = (headingError - 180)/180*rScale;
         // ensure minimal power to move robot
@@ -163,10 +163,10 @@ public class ShieldsAutonomous extends LinearOpMode {
         // get stuck in a while loop for the proper amount of time
         while (opModeIsActive() && (runtime.seconds() < time)) {
             if(lightVal > 0) {
-                double light = robot.OpticalDistanceSensor.getLightDetected();
-                telemetry.addData("light", light);
+                //double light = robot.OpticalDistanceSensor.getLightDetected();
+                //telemetry.addData("light", light);
                 telemetry.update();
-                if (light > lightVal)
+               // if (light > lightVal)
                     break;
             }
         }
