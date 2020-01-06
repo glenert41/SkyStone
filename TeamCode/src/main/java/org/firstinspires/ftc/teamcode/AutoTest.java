@@ -488,7 +488,7 @@ public class AutoTest extends LinearOpMode {
 
     void positionRobot() {
         driveForward();
-
+        //TODO: Get a more accurate distance
         while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 70) && opModeIsActive()) {
 
         }
