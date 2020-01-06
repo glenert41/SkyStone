@@ -36,12 +36,15 @@ public class AutoTest extends LinearOpMode {
     // === DEFINE CONSTANTS HERE! ===
     double STRAFE_SPEED = 0.2;
     double FAST_SPEED = 1.0;
-    double SLOW_SPEED = 0.3;
+    double SLOW_SPEED = 0.2;
+    int BLUETAPE = 22; // Blue tape down sensor color value
+    int REDTAPE = 30; // Red tape down sensor color value
+
     // ==============================
     public void runOpMode() {
         int teamcolor = 0; // 1 = Blue 2 = Red
         int blue = 1;
-        int red = 2;
+        int red = 0;
         int task = 0; //1 = mat 2 = stones
         int mat = 1;
         int stones = 2;
@@ -173,9 +176,11 @@ public class AutoTest extends LinearOpMode {
             }
             stopDriving();
             lastTime = runtime.milliseconds();
-            strafeRight(.3); //this actually makes it go left toward the center of the mat
+             //this actually makes it go left toward the center of the mat
+            Orientation targOrient;
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             while (runtime.milliseconds() < lastTime + 1000) {
-
+                strafeRight(.3, targOrient);
             }
             stopDriving();
             robot.matServoL.setPosition(freePos);
@@ -197,9 +202,13 @@ public class AutoTest extends LinearOpMode {
             robot.matServoR.setPosition(freePos);
             sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
 
-            strafeLeft(.3); //Actually left towards the skybridge
+            //Actually left towards the skybridge
             //Senses the red tape under the skybridge and tells the robot to stop
+
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
             while (robot.colorSensorDown.red() < 12 && opModeIsActive()) {
+                strafeLeft(.3, targOrient);
                 telemetry.addData("Red  ", robot.colorSensorDown.red());
                 telemetry.update();
             }
@@ -214,9 +223,12 @@ public class AutoTest extends LinearOpMode {
             }
             stopDriving();
             lastTime = runtime.milliseconds();
-            strafeLeft(.3); //this actually makes it go right toward the center of the mat
-            while (runtime.milliseconds() < lastTime + 1000) {
+             //this actually makes it go right toward the center of the mat
+            Orientation targOrient;
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
+            while (runtime.milliseconds() < lastTime + 1000) {
+                strafeLeft(.3, targOrient);
             }
             stopDriving();
             robot.matServoL.setPosition(freePos);
@@ -237,9 +249,12 @@ public class AutoTest extends LinearOpMode {
 
             rotateR(-10.0, 0.3);
 
-            strafeRight(.3); //Actually left towards the skybridge
+             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
+            targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
             while (robot.colorSensorDown.red() < 30 && opModeIsActive()) {
+                strafeRight(.3, targOrient);
                 telemetry.addData("Red  ", robot.colorSensorDown.red());
                 telemetry.update();
             }
@@ -257,39 +272,7 @@ public class AutoTest extends LinearOpMode {
                 telemetry.addData("Yellow", 0);
             telemetry.update();
         }
-/***********
- /* Sample code for taking yellow/black readings
- //ColorSensor bottomColorSensor;
- // bottomColorSensor = hardwareMap.colorSensor.get("bCS");
- //if NO skystone detected
- if (ColorBot.isYellow(robot.colorSensorL) && ColorBot.isYellow(robot.colorSensorR)) {
- //strafe left
- strafeLeft(3);
- }
- // if skystons ARE Detected
- if (ColorBot.isBlack(robot.colorSensorL) && ColorBot.isBlack(robot.colorSensorR)) {
- telemetry.addData("Object is Black", robot.colorSensorL.red());
- //Detects the Skystone
- while (robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance + 20) {
- driveBackwards();
- }
- //pick up skystone //test
- stopDriving();
- robot.clawServo.setPosition(grabPos); //sets the servo to Grab Position
- while (robot.backDistance.getDistance(DistanceUnit.MM) > meetDistance - 20) {
- driveForward();
- }
- while (!ColorBot.isRed(robot.colorSensorDown)) {
- strafeRight(.3);
- }
- */
-        //stopDriving();
-
-        //outAndBack();
-
     }
-
-
     // Functions ----------------------------------------------------------------------------------------------------------------
 
 
@@ -332,14 +315,27 @@ public class AutoTest extends LinearOpMode {
 
     //Drive Forwards - Towards where the Backsensor is facing
     void driveForwardSlow() {
-        robot.frontLeftMotor.setPower(0.2);
-        robot.backLeftMotor.setPower(0.2);
-        robot.backRightMotor.setPower(-0.2);
-        robot.frontRightMotor.setPower(-0.2);
+        robot.frontLeftMotor.setPower(SLOW_SPEED);
+        robot.backLeftMotor.setPower(SLOW_SPEED);
+        robot.backRightMotor.setPower(-1 * SLOW_SPEED);
+        robot.frontRightMotor.setPower(-1 * SLOW_SPEED);
     }
 
     //Strafe Left - (used to strafe towards the center line for parking)
-    void strafeLeft(double pwr) {  //added int pwr to reduce initial power
+    void strafeLeft(double pwr, Orientation target) {  //added int pwr to reduce initial power
+        //error stuff here
+        Orientation currOrient;
+        currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
+        double targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
+        double error = targAng-currAng;
+
+        if(error<-10){
+            pwr-=.2;
+        }
+        else if (error>10){
+            pwr+=.2;
+        }
 
         robot.frontLeftMotor.setPower(pwr);
         robot.backLeftMotor.setPower(-pwr); //Changing the order in which the wheels start
@@ -348,13 +344,24 @@ public class AutoTest extends LinearOpMode {
 
     }
 
-    void strafeRight(double pwr) {  //added int pwr to reduce initial power
+    void strafeRight(double pwr, Orientation target) {  //added int pwr to reduce initial power
+        //error stuff here
+        Orientation currOrient;
+        currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
+        double targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
+        double error = targAng-currAng;
 
+        if(error<-10){
+            pwr-=.2;
+        }
+        else if (error>10){
+            pwr+=.2;
+        }
         robot.frontLeftMotor.setPower(-pwr);
         robot.backLeftMotor.setPower(pwr); //Changing the order in which the wheels start
         robot.backRightMotor.setPower(pwr);
         robot.frontRightMotor.setPower(-pwr);
-
     }
 
     void outAndBackRed() {
@@ -376,7 +383,7 @@ public class AutoTest extends LinearOpMode {
         driveBackwardsSlow();*/
 
         //Stop at the red tape
-        while (robot.colorSensorDown.red() < 30 && opModeIsActive()) {
+        while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
 
         }
         stopDriving();
@@ -401,7 +408,7 @@ public class AutoTest extends LinearOpMode {
         driveBackwardsSlow();
 
         //Stop at the red tape
-        while (robot.colorSensorDown.red() > 12 && opModeIsActive()) {
+        while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
 
         }
         stopDriving();
@@ -409,6 +416,7 @@ public class AutoTest extends LinearOpMode {
     }
 
     void scan(int color) {
+        boolean strafeRightBoole;
         boolean bothYellow = true;
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
@@ -421,12 +429,16 @@ public class AutoTest extends LinearOpMode {
         });
 
         if (color == 2) {
-            strafeRight(STRAFE_SPEED);
-        }
-        if (color == 1) {
-            strafeLeft(STRAFE_SPEED);
-        }
+            strafeRightBoole = true;
 
+        }
+        else{
+            strafeRightBoole = false;
+        }
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        telemetry.addData("heading", "heading: " + targOrient);
+        telemetry.update();
         ///ALL STRAFES ARE INVERTED IN AUTONOMOUS
         //STRAFE RIGHT IN THE AUTONOMOUS CODE IS STRAFE LEFT IN REAL LIFE
         //sorry for the all caps, it's just important
@@ -434,6 +446,13 @@ public class AutoTest extends LinearOpMode {
         //sleep(100);
         //We may need to change the alpha values to get consistent readings
         while ((bothYellow == true) && opModeIsActive()) {
+
+            if(strafeRightBoole){
+                strafeRight(STRAFE_SPEED, targOrient);
+            }
+            else{
+                strafeLeft(STRAFE_SPEED, targOrient);
+            }
             int skyStoneThreshold = 100;
             if ((robot.colorSensorL.alpha() > skyStoneThreshold) && (robot.colorSensorR.alpha() > skyStoneThreshold)) {
                 bothYellow = true;
@@ -456,18 +475,18 @@ public class AutoTest extends LinearOpMode {
 
             }
 
-            telemetry.addData("leftVal = ", "leftVal = " + robot.colorSensorL.alpha());
-            telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
+          //  telemetry.addData("leftVal = ", "leftVal = " + robot.colorSensorL.alpha());
+           // telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
             //telemetry.addData("bothYellowVal: ", "Yellow State: " + bothYellow);
             telemetry.update();
         }
 
 
-        telemetry.addData("SICK", "I SEE A SKYSTONE");
+      //  telemetry.addData("SICK", "I SEE A SKYSTONE");
         telemetry.update();
         relativeLayout.post(new Runnable() {
             public void run() {
-                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.GREEN;
+                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;  //used to be green but want white for blue tape
                 robot.blinkinLedDriver.setPattern(robot.pattern);
             }
         });
@@ -478,7 +497,8 @@ public class AutoTest extends LinearOpMode {
     void raiseClaw() {
         robot.liftMotor.setPower(-1);
         while ((robot.liftMotor.getCurrentPosition() > -2500) && opModeIsActive()) {
-            //do nothing}
+            telemetry.addData("raiseClaw pos: ", robot.liftMotor.getCurrentPosition());
+            telemetry.update();
         }
         robot.liftMotor.setPower(0.0);
     }
@@ -486,6 +506,8 @@ public class AutoTest extends LinearOpMode {
     void lowerClaw() {
         robot.liftMotor.setPower(1);
         while ((robot.liftMotor.getCurrentPosition() < 0) && opModeIsActive()) {
+            telemetry.addData("lowerClaw pos: ", robot.liftMotor.getCurrentPosition());
+            telemetry.update();
         }
         robot.liftMotor.setPower(0.0);
     }
@@ -494,7 +516,8 @@ public class AutoTest extends LinearOpMode {
         driveForwardSlow();
         //TODO: Get a more accurate distance
         while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 140) && opModeIsActive()) {
-
+            telemetry.addData("positionRobot  dist(mm): ", robot.frontDistance.getDistance(DistanceUnit.MM));
+            telemetry.update();
         }
 
     }
@@ -502,6 +525,8 @@ public class AutoTest extends LinearOpMode {
     void grabPrep() {
         driveBackwards();
         while ((robot.backDistance.getDistance(DistanceUnit.MM) > 625) && opModeIsActive()) {
+            telemetry.addData("driveBackwards  dist(mm): ", robot.backDistance.getDistance(DistanceUnit.MM));
+            telemetry.update();
             sleep(10);
         }
         stopDriving();
@@ -543,7 +568,7 @@ public class AutoTest extends LinearOpMode {
     void parkStonesRed() {
         driveForwardSlow(); //Back to the parking tape under the skybridge
         //Stop at the red tape
-        while (robot.colorSensorDown.red() < 30 && opModeIsActive()) {
+        while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
             sleep(10);
             telemetry.addData("parking Red  ", robot.colorSensorDown.red());
             telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
@@ -558,7 +583,7 @@ public class AutoTest extends LinearOpMode {
         driveForwardSlow();  //Back to the parking tape under the skybridge
         //Stop at the blue tape
         //TODO create a blue version of the red check
-        while (robot.colorSensorDown.blue() < 22 && opModeIsActive()) {
+        while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
             sleep(10);
             telemetry.addData("parking Blue  ", robot.colorSensorDown.red());
             telemetry.addData("parking Alpha  ", robot.colorSensorDown.alpha());
