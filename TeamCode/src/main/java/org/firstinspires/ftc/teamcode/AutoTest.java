@@ -372,10 +372,15 @@ public class AutoTest extends LinearOpMode {
         driveForwardSlow();
         sleep(2000);
         stopDriving();
-        lowerClaw();
         openClaw(); //Claw servo in the open position
-        sleep(500);
+        sleep(300);
+        stopDriving();
         driveBackwardsSlow();  //Back to the parking tape under the skybridge
+        sleep(1000);
+        stopDriving();
+        lowerClaw();
+        sleep(250);
+        driveBackwardsSlow();
        /* sleep(500);
         stopDriving();
         lowerClaw();
@@ -400,15 +405,15 @@ public class AutoTest extends LinearOpMode {
         stopDriving();
         openClaw(); //Claw servo in the open position
         sleep(300);
+        stopDriving();
         driveBackwardsSlow();  //Back to the parking tape under the skybridge
-        sleep(500);
+        sleep(1000);
         stopDriving();
         lowerClaw();
-        sleep(1000);
+        sleep(250);
         driveBackwardsSlow();
-
-        //Stop at the red tape
-        while (robot.colorSensorDown.blue() > BLUETAPE && opModeIsActive()) {
+        //Stop at the blue tape
+        while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
 
         }
         stopDriving();
@@ -523,8 +528,8 @@ public class AutoTest extends LinearOpMode {
     }
 
     void grabPrep() {
-        driveBackwards();
-        while ((robot.backDistance.getDistance(DistanceUnit.MM) > 625) && opModeIsActive()) {
+        driveBackwardsSlow();
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) < 200) && opModeIsActive()) {
             telemetry.addData("driveBackwards  dist(mm): ", robot.backDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
             sleep(10);
@@ -537,7 +542,7 @@ public class AutoTest extends LinearOpMode {
 
     void grabStone() {
         stopDriving();
-        driveForward();
+        driveForwardSlow();
         while ((robot.backDistance.getDistance(DistanceUnit.MM) < 700) && opModeIsActive()) {
             sleep(10);
         }
@@ -548,8 +553,8 @@ public class AutoTest extends LinearOpMode {
         closeClaw();
         sleep(500);
 
-        driveBackwards();
-        while ((robot.backDistance.getDistance(DistanceUnit.MM) > 690) && opModeIsActive()) {
+        driveBackwardsSlow();
+        while ((robot.backDistance.getDistance(DistanceUnit.MM) > 720) && opModeIsActive()) {
             sleep(10);
         }
         stopDriving();
@@ -575,7 +580,7 @@ public class AutoTest extends LinearOpMode {
             telemetry.update();
         }
         stopDriving();
-        sleep(500);
+        sleep(100);
     }
 
 
@@ -590,7 +595,7 @@ public class AutoTest extends LinearOpMode {
             telemetry.update();
         }
         stopDriving();
-        sleep(500);
+        sleep(100);
 
     }
 

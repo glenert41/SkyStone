@@ -53,13 +53,10 @@ public class BACONbotMechanum extends LinearOpMode {
     int MOVINGDOWN = 3;
     int liftState = STOPPED;
 
-
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initializing");
         telemetry.update();
-
 
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
@@ -131,11 +128,8 @@ public class BACONbotMechanum extends LinearOpMode {
 
             // In this mode the Left stick moves the robot in the direction pointed to by x,y
             //              the Right stick x controls rotation; right (positive) rotates clockwise
-
-
             // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
             // Get the x value of the right joystick.
-
 
             y = gamepad1.left_stick_y;
             x = gamepad1.left_stick_x;
@@ -156,10 +150,8 @@ public class BACONbotMechanum extends LinearOpMode {
             backLeft = -y - x + r;
             frontLeft = -y + x + r;
 
-
             if (runtime.milliseconds() > lastSpeedTime + interval) {
                 lastSpeedTime = runtime.milliseconds();
-
 
                 frontLeft = getRampPower(frontLeft, robot.frontLeftMotor.getPower(), step);
                 frontRight = getRampPower(-frontRight, -robot.frontRightMotor.getPower(), step);
@@ -183,9 +175,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.frontRightMotor.setPower(frontRight);
                 robot.backLeftMotor.setPower(backLeft);
                 robot.backRightMotor.setPower(backRight);
-
             }
-
             //Raise and Lower Lift Motor (Manual)
             //Left Bumper = Up
             //Right Bumper = Down
@@ -196,8 +186,6 @@ public class BACONbotMechanum extends LinearOpMode {
             } else {
                 robot.liftMotor.setPower(0);
             }
-
-
             if(gamepad2.a) {
                 liftState = MOVINGUP;
                 robot.liftMotor.setPower(-1);
@@ -206,7 +194,6 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.liftMotor.setPower(0);
                 liftState = STOPPED;
             }
-
             if(gamepad2.b) {
                 liftState = MOVINGDOWN;
                 robot.liftMotor.setPower(1);
@@ -216,8 +203,6 @@ public class BACONbotMechanum extends LinearOpMode {
                 liftState = STOPPED;
             }
 
-
-
             //Goes to 1st Block Level
           /*  if (gamepad2.a) {
                 robot.liftMotor.setPower(-1);
@@ -226,7 +211,6 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
                 robot.liftMotor.setPower(0.0);
             }
-
             //Goes to Ground Block Level
             if (gamepad2.b) {
                 robot.liftMotor.setPower(1);
@@ -241,7 +225,6 @@ public class BACONbotMechanum extends LinearOpMode {
             double spR;
             spR = robot.matServoR.getPosition();
 
-
             //Grab mat
             //Down D-pad - Grab
             //Up D-pad - Free
@@ -253,7 +236,6 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.matServoL.setPosition(spL-.1);
                 robot.matServoR.setPosition(spR+.1);
             }
-
 
             double GrabPos = 1;
             double FreePos = 0;
@@ -279,14 +261,11 @@ public class BACONbotMechanum extends LinearOpMode {
             }
             */
 
-
             //Claw Servo (Blocks)
             double sp;
             sp = robot.clawServo.getPosition();
 
             if (gamepad2.x) {
-
-
                 if (sp == 0) {
                     robot.clawServo.setPosition(1);
                     relativeLayout.post(new Runnable() {
@@ -297,8 +276,6 @@ public class BACONbotMechanum extends LinearOpMode {
                         });
                     sleep(500);
                 }
-
-
                 if (sp == 1) {
                     robot.clawServo.setPosition(0);
                     relativeLayout.post(new Runnable() {
@@ -316,14 +293,10 @@ public class BACONbotMechanum extends LinearOpMode {
             capstone = robot.capstoneServo.getPosition();
 
             if (gamepad2.y) {
-
-
                 if (capstone == .5) {
                     robot.capstoneServo.setPosition(1);
                     sleep(500);
                 }
-
-
                 if (capstone == 1) {
                     robot.capstoneServo.setPosition(.5);
                     sleep(500);
@@ -331,8 +304,6 @@ public class BACONbotMechanum extends LinearOpMode {
                 telemetry.addData("Capstone Servo Position", robot.capstoneServo.getPosition());
                 telemetry.update();
             }
-
-
 
             /*
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
@@ -345,14 +316,6 @@ public class BACONbotMechanum extends LinearOpMode {
             telemetry.addData("FrontRight", frontRight);
             telemetry.addData("BackLeft", backLeft);
             telemetry.addData("BackRight", backRight);
-
-
-
-
-
-
-
-
 /*
             // Show wheel power to driver
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -368,18 +331,12 @@ public class BACONbotMechanum extends LinearOpMode {
            // telemetry.addData("colorSensor--", String.format("%.01f mm", robot.distanceSensorL.getDistance(DistanceUnit.MM))); //Added this one
 
 */
-
-
             telemetry.update();
-
-
         }
     }
 
-
     // Functions --------------------------------------
-
-
+    
     double getRampPower(double t, double a, double step) {
         double delta;
         double returnPower = 0;
