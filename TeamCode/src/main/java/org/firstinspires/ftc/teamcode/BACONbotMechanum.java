@@ -124,6 +124,7 @@ public class BACONbotMechanum extends LinearOpMode {
         double currAng;
         double error;
         double lastSpeedTime = runtime.milliseconds();
+        double fastSlow;
         Orientation currOrient;
         Orientation target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);;
         Boolean released = false;
@@ -134,7 +135,12 @@ public class BACONbotMechanum extends LinearOpMode {
             //              the Right stick x controls rotation; right (positive) rotates clockwise
             // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
             // Get the x value of the right joystick.
-
+            if(gamepad1.left_stick_button){
+                fastSlow = 2;
+            }
+            else{
+               fastSlow = 1;
+            }
             y = gamepad1.left_stick_y;
             x = gamepad1.left_stick_x;
             r = gamepad1.right_stick_x;
@@ -148,16 +154,18 @@ public class BACONbotMechanum extends LinearOpMode {
                 target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 released = true;
             }
-            currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
-            targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
-            error = -(targAng-currAng)/180*.2;
-            if ((error < .1) && (error > 0)) {
-                error = 0;
-            } else if ((error > -.1) && (error < 0)) {
-                error = 0;
+            if(r==0) {
+                currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
+                targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
+                error = -(targAng - currAng) / 180 * .2;
+                if ((error < .07) && (error > 0)) {
+                    error = .1;
+                } else if ((error > -.1) && (error < 0)) {
+                    error = .1;
+                }
+                r += error;
             }
-            r+=error;
             // calculate the power for each wheel
 
             backRight = +y - x + r;
@@ -186,10 +194,10 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
 
                 // Set power on each wheel
-                robot.frontLeftMotor.setPower(frontLeft);
-                robot.frontRightMotor.setPower(frontRight);
-                robot.backLeftMotor.setPower(backLeft);
-                robot.backRightMotor.setPower(backRight);
+                robot.frontLeftMotor.setPower(frontLeft/fastSlow);
+                robot.frontRightMotor.setPower(frontRight/fastSlow);
+                robot.backLeftMotor.setPower(backLeft/fastSlow);
+                robot.backRightMotor.setPower(backRight/fastSlow);
             }
             //Raise and Lower Lift Motor (Manual)
             //Left Bumper = Up
