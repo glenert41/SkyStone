@@ -383,11 +383,6 @@ public class AutoTest extends LinearOpMode {
             r = -.07;
         }
 
-        if (error < 0)
-            pwr = pwr - r;
-        else
-            pwr = pwr + r ;
-
         telemetry.addData("pwr:>", pwr);
         telemetry.addData("error:>", r);
         telemetry.addData("r:>", r);
@@ -488,10 +483,10 @@ public class AutoTest extends LinearOpMode {
         //We may need to change the alpha values to get consistent readings
         while ((bothYellow == true) && opModeIsActive()) {
 
-            if(strafeRightBoole){
+            if(color == 2){
                 strafeRight(STRAFE_SPEED, targOrient);
             }
-            else{
+            else if(color == 1){
                 strafeLeft(STRAFE_SPEED, targOrient);
             }
             int skyStoneThreshold = 100;
@@ -515,9 +510,8 @@ public class AutoTest extends LinearOpMode {
                 bothYellow = false;
 
             }
-
-          //  telemetry.addData("leftVal = ", "leftVal = " + robot.colorSensorL.alpha());
-           // telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
+            telemetry.addData("leftVal = ", "leftVal = " + robot.colorSensorL.alpha());
+           telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
             //telemetry.addData("bothYellowVal: ", "Yellow State: " + bothYellow);
             telemetry.update();
         }

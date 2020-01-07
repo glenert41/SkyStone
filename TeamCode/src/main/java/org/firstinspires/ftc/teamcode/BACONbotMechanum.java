@@ -127,7 +127,7 @@ public class BACONbotMechanum extends LinearOpMode {
         double fastSlow;
         Orientation currOrient;
         Orientation target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);;
-        Boolean released = false;
+        Boolean released = true;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -144,25 +144,19 @@ public class BACONbotMechanum extends LinearOpMode {
             y = gamepad1.left_stick_y;
             x = gamepad1.left_stick_x;
             r = gamepad1.right_stick_x;
-
+            currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             // do not let rotation dominate movement
             r = r / 3;
-            if(r!=0){
-                released = false;
-            }
-            else if(!released){
-                target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-                released = true;
+            if(r>0.01 || r<0.01){
+                target = currOrient;
             }
             if(r==0) {
-                currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
                 currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
                 targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
-                error = -(targAng - currAng) / 180 * .2;
-                if ((error < .07) && (error > 0)) {
-                    error = .1;
-                } else if ((error > -.1) && (error < 0)) {
-                    error = .1;
+                error = (targAng - currAng) / 180 * .4;
+                if ((error < .05 || error >-.05)) {
+                    error = 0;
                 }
                 r += error;
             }
