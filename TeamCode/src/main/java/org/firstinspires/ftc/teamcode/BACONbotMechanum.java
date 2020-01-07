@@ -120,9 +120,13 @@ public class BACONbotMechanum extends LinearOpMode {
         double max;
         double step = 0.2;
         double interval = 75;
+        double targAng;
+        double currAng;
+        double error;
         double lastSpeedTime = runtime.milliseconds();
         Orientation currOrient;
-        Orientation targOrient;
+        Orientation target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);;
+        Boolean released = false;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -138,11 +142,22 @@ public class BACONbotMechanum extends LinearOpMode {
             // do not let rotation dominate movement
             r = r / 3;
             if(r!=0){
-                targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                released = false;
             }
-            else{
-
+            else if(!released){
+                target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+                released = true;
             }
+            currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
+            targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
+            error = -(targAng-currAng)/180*.2;
+            if ((error < .1) && (error > 0)) {
+                error = 0;
+            } else if ((error > -.1) && (error < 0)) {
+                error = 0;
+            }
+            r+=error;
             // calculate the power for each wheel
 
             backRight = +y - x + r;
@@ -336,7 +351,7 @@ public class BACONbotMechanum extends LinearOpMode {
     }
 
     // Functions --------------------------------------
-    
+
     double getRampPower(double t, double a, double step) {
         double delta;
         double returnPower = 0;
