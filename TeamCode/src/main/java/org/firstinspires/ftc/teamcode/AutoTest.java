@@ -325,44 +325,80 @@ public class AutoTest extends LinearOpMode {
     void strafeLeft(double pwr, Orientation target) {  //added int pwr to reduce initial power
         //error stuff here
         Orientation currOrient;
+        double rScale = 0.5;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
         double targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
         double error = targAng-currAng;
 
+        double r = -(error)/180*(pwr);
+
+/*
         if(error<-10){
-            pwr-=.2;
+            pwr-=.3;
         }
         else if (error>10){
-            pwr+=.2;
+            pwr+=.3;
+        }
+*/
+
+        if ((r < .07) && (r > 0)) {
+            r = .07;
+        } else if ((r > -.07) && (r < 0)) {
+            r = -.07;
         }
 
-        robot.frontLeftMotor.setPower(pwr);
-        robot.backLeftMotor.setPower(-pwr); //Changing the order in which the wheels start
-        robot.backRightMotor.setPower(-pwr);
-        robot.frontRightMotor.setPower(pwr);
+
+        telemetry.addData("pwr:>", pwr);
+        telemetry.addData("error:>", r);
+        telemetry.addData("r:>", r);
+        telemetry.update();
+
+        robot.frontLeftMotor.setPower(pwr+r);
+        robot.backLeftMotor.setPower(-pwr+r); //Changing the order in which the wheels start
+        robot.backRightMotor.setPower(-pwr+r);
+        robot.frontRightMotor.setPower(pwr+r);
 
     }
 
     void strafeRight(double pwr, Orientation target) {  //added int pwr to reduce initial power
         //error stuff here
         Orientation currOrient;
+        double rScale = 0.5;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
         double targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
         double error = targAng-currAng;
-
-        if(error<-10){
+        double r = -(error)/180*(pwr);
+  /*      if(error<-1){
             pwr-=.2;
         }
-        else if (error>10){
+        else if (error>1){
             pwr+=.2;
         }
-        robot.frontLeftMotor.setPower(-pwr);
-        robot.backLeftMotor.setPower(pwr); //Changing the order in which the wheels start
-        robot.backRightMotor.setPower(pwr);
-        robot.frontRightMotor.setPower(-pwr);
+*/
+        if ((r < .07) && (r > 0)) {
+            r = .07;
+        } else if ((r > -.07) && (r < 0)) {
+            r = -.07;
+        }
+
+        if (error < 0)
+            pwr = pwr - r;
+        else
+            pwr = pwr + r ;
+
+        telemetry.addData("pwr:>", pwr);
+        telemetry.addData("error:>", r);
+        telemetry.addData("r:>", r);
+        telemetry.update();
+
+        robot.frontLeftMotor.setPower(-pwr+r);
+        robot.backLeftMotor.setPower(pwr+r); //Changing the order in which the wheels start
+        robot.backRightMotor.setPower(pwr+r);
+        robot.frontRightMotor.setPower(-pwr+r);
     }
+
 
     void outAndBackRed() {
         driveForwardSlow(); //Out from the parking tape under the skybridge
