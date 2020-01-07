@@ -16,7 +16,11 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.util.concurrent.TimeUnit;
 
@@ -120,7 +124,8 @@ public class BACONbotMechanum extends LinearOpMode {
         double step = 0.2;
         double interval = 75;
         double lastSpeedTime = runtime.milliseconds();
-
+        Orientation currOrient;
+        Orientation targOrient;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -138,7 +143,12 @@ public class BACONbotMechanum extends LinearOpMode {
 
             // do not let rotation dominate movement
             r = r / 3;
+            if(r!=0){
+                targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            }
+            else{
 
+            }
             // calculate the power for each wheel
 
             backRight = +y - x + r;
@@ -384,7 +394,7 @@ public class BACONbotMechanum extends LinearOpMode {
         if (delta < 0) {  //slowing down
             returnPower = a - (step);
             if (returnPower < t)
-            returnPower = t;
+                returnPower = t;
         }
         if (delta == 0) {
             returnPower = a;
