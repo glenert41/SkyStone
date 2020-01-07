@@ -383,10 +383,10 @@ public class AutoTest extends LinearOpMode {
             r = -.07;
         }
 
-        telemetry.addData("pwr:>", pwr);
+       /* telemetry.addData("pwr:>", pwr);
         telemetry.addData("error:>", r);
         telemetry.addData("r:>", r);
-        telemetry.update();
+        telemetry.update();*/
 
         robot.frontLeftMotor.setPower(-pwr+r);
         robot.backLeftMotor.setPower(pwr+r); //Changing the order in which the wheels start
