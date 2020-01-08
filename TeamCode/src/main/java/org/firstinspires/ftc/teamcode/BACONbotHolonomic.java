@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class BACONbotHolonomic extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareBACONbot robot = new HardwareBACONbot();   // Use a BACONbot's hardware
+    HardwareHolonomic robot = new HardwareHolonomic();   // Use a BACONbot's hardware
 
     @Override
     //@Disable
