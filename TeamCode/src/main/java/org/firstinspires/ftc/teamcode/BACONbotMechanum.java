@@ -64,7 +64,7 @@ public class BACONbotMechanum extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-
+        /*
         telemetry.addData("Press X for Blue, B for Red", "");
         telemetry.update();
         // TODO: What will go in this while loop?
@@ -92,6 +92,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
             });
         }
+        */
 
         robot.capstoneServo.setPosition(.5);
 
@@ -125,6 +126,7 @@ public class BACONbotMechanum extends LinearOpMode {
         double error;
         double lastSpeedTime = runtime.milliseconds();
         double fastSlow;
+        double xUp = 0;
         Orientation currOrient;
         Orientation target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);;
         Boolean released = true;
@@ -282,7 +284,10 @@ public class BACONbotMechanum extends LinearOpMode {
             double sp;
             sp = robot.clawServo.getPosition();
 
-            if (gamepad2.x) {
+
+            if (gamepad2.x && (xUp == 1)) {
+                xUp = 0;
+
                 if (sp == 0) {
                     robot.clawServo.setPosition(1);
                     relativeLayout.post(new Runnable() {
@@ -291,7 +296,7 @@ public class BACONbotMechanum extends LinearOpMode {
                             robot.blinkinLedDriver.setPattern(robot.pattern);
                 }
                         });
-                    sleep(500);
+
                 }
                 if (sp == 1) {
                     robot.clawServo.setPosition(0);
@@ -301,8 +306,16 @@ public class BACONbotMechanum extends LinearOpMode {
                             robot.blinkinLedDriver.setPattern(robot.pattern);
                         }
                     });
-                    sleep(500);
+
                 }
+
+            }
+
+
+
+            if(!gamepad2.x){
+                xUp = 1;
+
 
             }
             //Capstone Servo
@@ -320,6 +333,10 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
                 telemetry.addData("Capstone Servo Position", robot.capstoneServo.getPosition());
                 telemetry.update();
+            }
+            if (gamepad2.a){
+                robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
 
             /*

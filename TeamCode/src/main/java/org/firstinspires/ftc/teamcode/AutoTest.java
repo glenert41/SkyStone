@@ -116,6 +116,10 @@ public class AutoTest extends LinearOpMode {
 
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) robot.backDistance;
 
+        //mat servos up
+        robot.matServoL.setPosition(freePos);
+        robot.matServoR.setPosition(grabPos);
+
         waitForStart();
         runtime.reset();
 
@@ -170,7 +174,11 @@ public class AutoTest extends LinearOpMode {
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //BLUE TEAM MAT
         if ((task == mat) && (teamcolor == blue)) {
-            driveForward();
+            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            robot.blinkinLedDriver.setPattern(robot.pattern);
+
+
+            driveForwardSlow();
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
             {
             }
@@ -183,14 +191,16 @@ public class AutoTest extends LinearOpMode {
                 strafeRight(.3, targOrient);
             }
             stopDriving();
-            robot.matServoL.setPosition(freePos);
-            robot.matServoR.setPosition(grabPos);
+
+            //servos down
+            robot.matServoL.setPosition(grabPos);
+            robot.matServoR.setPosition(freePos);
             sleep(1000); //We can edit this delay based on it we need more time or not
             //grabmat
             //drivebacktowall
             //releasemat
             //gotored
-            driveBackwards();
+            driveBackwardsSlow();
 
             while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
             {
@@ -198,8 +208,11 @@ public class AutoTest extends LinearOpMode {
                 telemetry.update();
             }
             stopDriving();
-            robot.matServoL.setPosition(grabPos);
-            robot.matServoR.setPosition(freePos);
+
+
+            //mat servos up
+            robot.matServoL.setPosition(freePos);
+            robot.matServoR.setPosition(grabPos);
             sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
 
             //Actually left towards the skybridge
@@ -207,17 +220,17 @@ public class AutoTest extends LinearOpMode {
 
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            while (robot.colorSensorDown.red() < 12 && opModeIsActive()) {
-                strafeLeft(.3, targOrient);
-                telemetry.addData("Red  ", robot.colorSensorDown.red());
-                telemetry.update();
+            while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+
             }
             stopDriving();
         }
 
 
         if ((task == mat) && (teamcolor == red)) {
-            driveForward();
+            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            robot.blinkinLedDriver.setPattern(robot.pattern);
+            driveForwardSlow();
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
             {
             }
@@ -231,11 +244,13 @@ public class AutoTest extends LinearOpMode {
                 strafeLeft(.3, targOrient);
             }
             stopDriving();
-            robot.matServoL.setPosition(freePos);
-            robot.matServoR.setPosition(grabPos);
+
+            //servos down
+            robot.matServoL.setPosition(grabPos);
+            robot.matServoR.setPosition(freePos);
             sleep(1000); //We can edit this delay based on it we need more time or not
 
-            driveBackwards();
+            driveBackwardsSlow();
 
             while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
             {
@@ -243,8 +258,10 @@ public class AutoTest extends LinearOpMode {
                 telemetry.update();
             }
             stopDriving();
-            robot.matServoL.setPosition(grabPos);
-            robot.matServoR.setPosition(freePos);
+
+            //mat servos up
+            robot.matServoL.setPosition(freePos);
+            robot.matServoR.setPosition(grabPos);
             sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
 
             rotateR(-10.0, 0.3);
@@ -253,7 +270,7 @@ public class AutoTest extends LinearOpMode {
             //Senses the BLUE tape under the skybridge and tells the robot to stop
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-            while (robot.colorSensorDown.red() < 30 && opModeIsActive()) {
+            while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
                 strafeRight(.3, targOrient);
                 telemetry.addData("Red  ", robot.colorSensorDown.red());
                 telemetry.update();
@@ -489,6 +506,7 @@ public class AutoTest extends LinearOpMode {
             else if(color == 1){
                 strafeLeft(STRAFE_SPEED, targOrient);
             }
+
             int skyStoneThreshold = 100;
             if ((robot.colorSensorL.alpha() > skyStoneThreshold) && (robot.colorSensorR.alpha() > skyStoneThreshold)) {
                 bothYellow = true;
@@ -550,7 +568,7 @@ public class AutoTest extends LinearOpMode {
     void positionRobot() {
         driveForwardSlow();
         //TODO: Get a more accurate distance
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 140) && opModeIsActive()) {
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 170) && opModeIsActive()) {
             telemetry.addData("positionRobot  dist(mm): ", robot.frontDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
         }
@@ -685,6 +703,12 @@ public class AutoTest extends LinearOpMode {
         robot.backLeftMotor.setPower(speed);
         robot.backRightMotor.setPower(speed);
 
+    }
+
+
+    void stopBACON(){
+        telemetry.addData("baconStop!", "Yes");
+        telemetry.update();
     }
 
     //----------------------------------------------------------------------------------------------

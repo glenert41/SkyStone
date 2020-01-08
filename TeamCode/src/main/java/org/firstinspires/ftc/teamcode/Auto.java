@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.HardwareBACONbot;
 //import org.firstinspires.ftc.teamcode.Teleops.HardwareMap;
 
 
-@Autonomous(name = "BACON: Autonomous 19-20", group = "Opmode")
+@Autonomous(name = "BACON: OLD Autonomous 19-20", group = "Opmode")
 //@Disabled
 
 //name file AutonomousB
