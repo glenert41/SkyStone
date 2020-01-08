@@ -39,6 +39,8 @@ public class AutoTest extends LinearOpMode {
     double SLOW_SPEED = 0.2;
     int BLUETAPE = 22; // Blue tape down sensor color value
     int REDTAPE = 30; // Red tape down sensor color value
+    int blue = 1;
+    int red = 0;
 
     // ==============================
     public void runOpMode() {
@@ -129,12 +131,14 @@ public class AutoTest extends LinearOpMode {
         //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //First troubleshooting steps for this section would be to check the direction of the strafes in scan and grab
         if ((task == stones) && (teamcolor == red)) {
+            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+            robot.blinkinLedDriver.setPattern(robot.pattern);
             //This lifts the claw one level so that it won't be in the way of the blocks while scanning
             raiseClaw();
             //This gets the robot in the proper place to sense the Skystones
             positionRobot();
             //This performs the scanning operation until we find a Skystone
-            scan(red); //1 means red
+            scan(red); //2 means red
             //Setting it up to go up and grab the Skystone
             grabPrep();
             //Pick up the Skystone
@@ -156,7 +160,7 @@ public class AutoTest extends LinearOpMode {
             //This gets the robot in the proper place to sense the Skystones
             positionRobot();
             //This performs the scanning operation until we find a Skystone
-            scan(blue); //2 means blue
+            scan(blue); //1 means blue
             //Setting it up to go up and grab the Skystone
             grabPrep();
             //Pick up the Skystone
@@ -184,7 +188,7 @@ public class AutoTest extends LinearOpMode {
             }
             stopDriving();
             lastTime = runtime.milliseconds();
-             //this actually makes it go left toward the center of the mat
+            //this actually makes it go left toward the center of the mat
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             while (runtime.milliseconds() < lastTime + 1000) {
@@ -236,7 +240,7 @@ public class AutoTest extends LinearOpMode {
             }
             stopDriving();
             lastTime = runtime.milliseconds();
-             //this actually makes it go right toward the center of the mat
+            //this actually makes it go right toward the center of the mat
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -266,7 +270,7 @@ public class AutoTest extends LinearOpMode {
 
             rotateR(-10.0, 0.3);
 
-             //Actually left towards the skybridge
+            //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -340,60 +344,40 @@ public class AutoTest extends LinearOpMode {
 
     //Strafe Left - (used to strafe towards the center line for parking)
     void strafeLeft(double pwr, Orientation target) {  //added int pwr to reduce initial power
-        //error stuff here
         Orientation currOrient;
-        double rScale = 0.5;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
-        double targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
-        double error = targAng-currAng;
+        double targAng = 0.0;  // target.angleUnit.DEGREES.normalize(target.firstAngle);
+        double error = targAng - currAng;
 
-        double r = -(error)/180*(pwr);
-
-/*
-        if(error<-10){
-            pwr-=.3;
-        }
-        else if (error>10){
-            pwr+=.3;
-        }
-*/
+        double r = -error / 180 * (pwr * 0.3);
 
         if ((r < .07) && (r > 0)) {
             r = .07;
         } else if ((r > -.07) && (r < 0)) {
             r = -.07;
         }
-
-
+/*
         telemetry.addData("pwr:>", pwr);
         telemetry.addData("error:>", r);
         telemetry.addData("r:>", r);
         telemetry.update();
-
-        robot.frontLeftMotor.setPower(pwr+r);
-        robot.backLeftMotor.setPower(-pwr+r); //Changing the order in which the wheels start
-        robot.backRightMotor.setPower(-pwr+r);
-        robot.frontRightMotor.setPower(pwr+r);
+*/
+        robot.frontLeftMotor.setPower(pwr + r);
+        robot.backLeftMotor.setPower(-pwr + r); //Changing the order in which the wheels start
+        robot.backRightMotor.setPower(-pwr + r);
+        robot.frontRightMotor.setPower(pwr + r);
 
     }
 
     void strafeRight(double pwr, Orientation target) {  //added int pwr to reduce initial power
-        //error stuff here
         Orientation currOrient;
-        double rScale = 0.5;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
-        double targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
-        double error = targAng-currAng;
-        double r = -(error)/180*(pwr);
-  /*      if(error<-1){
-            pwr-=.2;
-        }
-        else if (error>1){
-            pwr+=.2;
-        }
-*/
+        double targAng = 0.0;   // old stuff  target.angleUnit.DEGREES.normalize(target.firstAngle);
+        double error = targAng - currAng;
+        double r = -error / 180 * (pwr * 0.3);
+
         if ((r < .07) && (r > 0)) {
             r = .07;
         } else if ((r > -.07) && (r < 0)) {
@@ -405,10 +389,10 @@ public class AutoTest extends LinearOpMode {
         telemetry.addData("r:>", r);
         telemetry.update();*/
 
-        robot.frontLeftMotor.setPower(-pwr+r);
-        robot.backLeftMotor.setPower(pwr+r); //Changing the order in which the wheels start
-        robot.backRightMotor.setPower(pwr+r);
-        robot.frontRightMotor.setPower(-pwr+r);
+        robot.frontLeftMotor.setPower(-pwr + r);
+        robot.backLeftMotor.setPower(pwr + r); //Changing the order in which the wheels start
+        robot.backRightMotor.setPower(pwr + r);
+        robot.frontRightMotor.setPower(-pwr + r);
     }
 
 
@@ -469,25 +453,19 @@ public class AutoTest extends LinearOpMode {
     }
 
     void scan(int color) {
-        boolean strafeRightBoole;
+        telemetry.addData("Start", "scan");
+        stopDriving();
+        sleep(500);
+        telemetry.update();
+        int lalpha ;
+        int ralpha;
         boolean bothYellow = true;
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
 
-        relativeLayout.post(new Runnable() {
-            public void run() {
-                robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                robot.blinkinLedDriver.setPattern(robot.pattern);
-            }
-        });
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
 
-        if (color == 2) {
-            strafeRightBoole = true;
-
-        }
-        else{
-            strafeRightBoole = false;
-        }
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData("heading", "heading: " + targOrient);
@@ -500,42 +478,56 @@ public class AutoTest extends LinearOpMode {
         //We may need to change the alpha values to get consistent readings
         while ((bothYellow == true) && opModeIsActive()) {
 
-            if(color == 2){
+            if (color == red) {
                 strafeRight(STRAFE_SPEED, targOrient);
-            }
-            else if(color == 1){
+            } else if (color == blue) {
                 strafeLeft(STRAFE_SPEED, targOrient);
             }
 
-            int skyStoneThreshold = 100;
-            if ((robot.colorSensorL.alpha() > skyStoneThreshold) && (robot.colorSensorR.alpha() > skyStoneThreshold)) {
+            int skyStoneThreshold = 70;
+            ralpha = robot.colorSensorR.alpha();
+            lalpha = robot.colorSensorL.alpha();
+            if ((lalpha > skyStoneThreshold) && (ralpha > skyStoneThreshold)) {
                 bothYellow = true;
                 //both are yellow or air
             }
             //The next two are just extra cases if it isn't reading properly
-            if ((robot.colorSensorL.alpha() < skyStoneThreshold) && (robot.colorSensorR.alpha() > skyStoneThreshold)) {
+            if ((lalpha < skyStoneThreshold) && (ralpha > skyStoneThreshold)) {
                 bothYellow = true;
                 //left is black and right is yellow or air
             }
-            if ((robot.colorSensorL.alpha() > skyStoneThreshold) && (robot.colorSensorR.alpha() < skyStoneThreshold)) {
+            if ((lalpha > skyStoneThreshold) && (ralpha < skyStoneThreshold)) {
                 bothYellow = true;
                 //left is yellow or air and right is black
             }
-
+            /* begin correct heading part 1
+            Orientation heading;
+            heading = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            double cHeading;
+            cHeading = heading.angleUnit.DEGREES.normalize(heading.firstAngle);
+            end correct heading part 1  */
             // If it's black then bothYellow is false
-            if ((robot.colorSensorL.alpha() < skyStoneThreshold) && (robot.colorSensorR.alpha() < skyStoneThreshold)) {
-                sleep(30);
+            if ((lalpha < skyStoneThreshold) && (ralpha < skyStoneThreshold)) {
+                sleep(300); //keep strafing
+                /*  part 2 -- tried to correct heading
+                if (cHeading > 0.0) {//line up
+                    rotateR(0.0, .3);
+                } else if (cHeading < 0.0) {
+                    rotateL(0.0, .3);
+                }
+                end part 2 tried to correct heading */
                 bothYellow = false;
-
             }
+            /*
             telemetry.addData("leftVal = ", "leftVal = " + robot.colorSensorL.alpha());
-           telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
+            telemetry.addData("rightVal = ", "rightVal = " + robot.colorSensorR.alpha());
             //telemetry.addData("bothYellowVal: ", "Yellow State: " + bothYellow);
             telemetry.update();
+            */
         }
 
 
-      //  telemetry.addData("SICK", "I SEE A SKYSTONE");
+        //  telemetry.addData("SICK", "I SEE A SKYSTONE");
         telemetry.update();
         relativeLayout.post(new Runnable() {
             public void run() {
@@ -568,7 +560,7 @@ public class AutoTest extends LinearOpMode {
     void positionRobot() {
         driveForwardSlow();
         //TODO: Get a more accurate distance
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 170) && opModeIsActive()) {
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 160) && opModeIsActive()) {
             telemetry.addData("positionRobot  dist(mm): ", robot.frontDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
         }
@@ -602,7 +594,7 @@ public class AutoTest extends LinearOpMode {
         sleep(500);
 
         driveBackwardsSlow();
-        while ((robot.backDistance.getDistance(DistanceUnit.MM) > 720) && opModeIsActive()) {
+        while ((robot.backDistance.getDistance(DistanceUnit.MM) > 700) && opModeIsActive()) {
             sleep(10);
         }
         stopDriving();
@@ -650,8 +642,6 @@ public class AutoTest extends LinearOpMode {
     void rotateR(double heading, double speed) {
 
         Orientation angles;
-        Acceleration gravity;
-
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
         telemetry.update();
@@ -659,7 +649,6 @@ public class AutoTest extends LinearOpMode {
 
         rotateRight(speed);
         while ((angles.angleUnit.DEGREES.normalize(angles.firstAngle) > heading) && opModeIsActive()) {
-            angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
             telemetry.update();
             angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -679,7 +668,6 @@ public class AutoTest extends LinearOpMode {
     void rotateL(double heading, double speed) {
 
         Orientation angles;
-        Acceleration gravity;
 
         angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
@@ -688,7 +676,6 @@ public class AutoTest extends LinearOpMode {
 
         rotateLeft(-speed);
         while ((angles.angleUnit.DEGREES.normalize(angles.firstAngle) < heading) && opModeIsActive()) {
-            angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData("current heading", formatAngle(angles.angleUnit, angles.firstAngle));
             telemetry.update();
             angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -703,12 +690,6 @@ public class AutoTest extends LinearOpMode {
         robot.backLeftMotor.setPower(speed);
         robot.backRightMotor.setPower(speed);
 
-    }
-
-
-    void stopBACON(){
-        telemetry.addData("baconStop!", "Yes");
-        telemetry.update();
     }
 
     //----------------------------------------------------------------------------------------------

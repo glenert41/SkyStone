@@ -126,9 +126,12 @@ public class BACONbotMechanum extends LinearOpMode {
         double error;
         double lastSpeedTime = runtime.milliseconds();
         double fastSlow;
-        double xUp = 0;
+        double xUp = 0;  // gamepad2 x button is up
+        double aUp = 0;  // gamepad2 a button is up
+        double bUp = 0;  // gamepad2 b button is up
         Orientation currOrient;
-        Orientation target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);;
+        Orientation target = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        ;
         Boolean released = true;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -137,11 +140,10 @@ public class BACONbotMechanum extends LinearOpMode {
             //              the Right stick x controls rotation; right (positive) rotates clockwise
             // Get x and y values from left joystick. (With the Logitech 310 the joystick y goes negative when pushed forwards, so negate it)
             // Get the x value of the right joystick.
-            if(gamepad1.left_stick_button){
+            if (gamepad1.left_stick_button) {
                 fastSlow = 2;
-            }
-            else{
-               fastSlow = 1;
+            } else {
+                fastSlow = 1;
             }
             y = gamepad1.left_stick_y;
             x = gamepad1.left_stick_x;
@@ -149,15 +151,15 @@ public class BACONbotMechanum extends LinearOpMode {
             currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             // do not let rotation dominate movement
             r = r / 3;
-            if(r>0.01 || r<0.01){
+            if (r > 0.01 || r < 0.01) {
                 target = currOrient;
             }
-            if(r==0) {
+            if (r == 0) {
 
                 currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
                 targAng = target.angleUnit.DEGREES.normalize(target.firstAngle);
                 error = (targAng - currAng) / 180 * .4;
-                if ((error < .05 || error >-.05)) {
+                if ((error < .05 || error > -.05)) {
                     error = 0;
                 }
                 r += error;
@@ -178,7 +180,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 backRight = getRampPower(-backRight, -robot.backRightMotor.getPower(), step);
 
                 frontRight = -frontRight;
-                backRight = - backRight;
+                backRight = -backRight;
 
                 // Normalize the values so none exceeds +/- 1.0
                 max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
@@ -190,10 +192,10 @@ public class BACONbotMechanum extends LinearOpMode {
                 }
 
                 // Set power on each wheel
-                robot.frontLeftMotor.setPower(frontLeft/fastSlow);
-                robot.frontRightMotor.setPower(frontRight/fastSlow);
-                robot.backLeftMotor.setPower(backLeft/fastSlow);
-                robot.backRightMotor.setPower(backRight/fastSlow);
+                robot.frontLeftMotor.setPower(frontLeft / fastSlow);
+                robot.frontRightMotor.setPower(frontRight / fastSlow);
+                robot.backLeftMotor.setPower(backLeft / fastSlow);
+                robot.backRightMotor.setPower(backRight / fastSlow);
             }
             //Raise and Lower Lift Motor (Manual)
             //Left Bumper = Up
@@ -205,38 +207,44 @@ public class BACONbotMechanum extends LinearOpMode {
             } else {
                 robot.liftMotor.setPower(0);
             }
-            if(gamepad2.a) {
+            /*  this is code to move all the way down or up one block level
+                if we turn it on we need to find another way to reset encoder
+                old gamepad2.b code needs to be commented out below.
+
+            if (gamepad2.a && aUp == 1) {
+                aUp = 0;
                 liftState = MOVINGUP;
                 robot.liftMotor.setPower(-1);
             }
-            if(liftState == MOVINGUP && (robot.liftMotor.getCurrentPosition() < -2000)){
+            if (liftState == MOVINGUP && (robot.liftMotor.getCurrentPosition() < -2000)) {
                 robot.liftMotor.setPower(0);
                 liftState = STOPPED;
             }
-            if(gamepad2.b) {
+            if (!gamepad2.a) {
+                aUp = 1;
+            }
+            if (gamepad2.b && bUp == 1) {
+                bUp = 0;
                 liftState = MOVINGDOWN;
                 robot.liftMotor.setPower(1);
             }
-            if(liftState == MOVINGDOWN && (robot.liftMotor.getCurrentPosition() > 0)){
+            if (liftState == MOVINGDOWN && (robot.liftMotor.getCurrentPosition() > 0)) {
                 robot.liftMotor.setPower(0);
                 liftState = STOPPED;
             }
-
-            //Goes to 1st Block Level
-          /*  if (gamepad2.a) {
-                robot.liftMotor.setPower(-1);
-                while (robot.liftMotor.getCurrentPosition() > -2000) {
-                    //do nothing}
-                }
-                robot.liftMotor.setPower(0.0);
+            if (!gamepad2.b) {
+                bUp = 1;
             }
-            //Goes to Ground Block Level
+            *********  */
+
             if (gamepad2.b) {
+                liftState = MOVINGDOWN;
                 robot.liftMotor.setPower(1);
-                while (robot.liftMotor.getCurrentPosition() < 0) {
-                }
-                robot.liftMotor.setPower(0.0);
-            }*/
+            }
+            if (liftState == MOVINGDOWN && (robot.liftMotor.getCurrentPosition() > 0)) {
+                robot.liftMotor.setPower(0);
+                liftState = STOPPED;
+            }
 
             //matServo Servo Position
             double spL;
@@ -247,13 +255,13 @@ public class BACONbotMechanum extends LinearOpMode {
             //Grab mat
             //Down D-pad - Grab
             //Up D-pad - Free
-            if (gamepad1.dpad_down){
-                robot.matServoL.setPosition(spL+.1);
-                robot.matServoR.setPosition(spR-.1);
+            if (gamepad1.dpad_down) {
+                robot.matServoL.setPosition(spL + .1);
+                robot.matServoR.setPosition(spR - .1);
             }
-            if (gamepad1.dpad_up){
-                robot.matServoL.setPosition(spL-.1);
-                robot.matServoR.setPosition(spR+.1);
+            if (gamepad1.dpad_up) {
+                robot.matServoL.setPosition(spL - .1);
+                robot.matServoR.setPosition(spR + .1);
             }
 
             double GrabPos = 1;
@@ -290,33 +298,19 @@ public class BACONbotMechanum extends LinearOpMode {
 
                 if (sp == 0) {
                     robot.clawServo.setPosition(1);
-                    relativeLayout.post(new Runnable() {
-                        public void run(){
-                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                            robot.blinkinLedDriver.setPattern(robot.pattern);
-                }
-                        });
-
+                    robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+                    robot.blinkinLedDriver.setPattern(robot.pattern);
                 }
                 if (sp == 1) {
                     robot.clawServo.setPosition(0);
-                    relativeLayout.post(new Runnable() {
-                        public void run(){
-                            robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
-                            robot.blinkinLedDriver.setPattern(robot.pattern);
-                        }
-                    });
-
+                    robot.pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
+                    robot.blinkinLedDriver.setPattern(robot.pattern);
                 }
-
             }
 
 
-
-            if(!gamepad2.x){
+            if (!gamepad2.x) {
                 xUp = 1;
-
-
             }
             //Capstone Servo
             double capstone;
@@ -334,7 +328,7 @@ public class BACONbotMechanum extends LinearOpMode {
                 telemetry.addData("Capstone Servo Position", robot.capstoneServo.getPosition());
                 telemetry.update();
             }
-            if (gamepad2.a){
+            if (gamepad2.a) {
                 robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
@@ -390,7 +384,6 @@ public class BACONbotMechanum extends LinearOpMode {
         if (delta == 0) {
             returnPower = a;
         }
-
         return returnPower;
     }
 }
