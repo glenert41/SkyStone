@@ -60,6 +60,8 @@ public class ShieldsMecanumAuto extends LinearOpMode {
     // Functions ----------------------------------------------------------------------------------------------------------------
 
     void headingPowerTime(int heading, double pwr, double t, Orientation targ) {
+        // this is a new branch :)
+
         /* pwr(sin(heading+45))+r [M4]------[M1] pwr(cos(heading+45))-r
                                     |        |
            pwr(cos(heading+45))+r [M3]------[M2] pwr(sin(heading+45))-r */
