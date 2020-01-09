@@ -44,16 +44,15 @@ public class AutoTest extends LinearOpMode {
     int REDTAPE = 30; // Red tape down sensor color value
     int blue = 1;
     int red = 0;
+    int mat = 1;
+    int stones = 2;
     int FRONTDIST = 160;
 
     // ==============================
     public void runOpMode() {
         int teamcolor = 0; // 1 = Blue 2 = Red
-        int blue = 1;
-        int red = 0;
         int task = 0; //1 = mat 2 = stones
-        int mat = 1;
-        int stones = 2;
+
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double lastTime = runtime.milliseconds();
 
@@ -183,9 +182,9 @@ public class AutoTest extends LinearOpMode {
         if ((task == mat) && (teamcolor == blue)) {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
-            driveForwardSlow();
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
             {
+                driveForwardSlow();
             }
             stopDriving();
             lastTime = runtime.milliseconds();
@@ -193,7 +192,7 @@ public class AutoTest extends LinearOpMode {
             Orientation targOrient;
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             while (runtime.milliseconds() < lastTime + 1000) {
-                strafeRight(.3, targOrient);
+                strafeRight(mat, .3, targOrient);
             }
             stopDriving();
             driveForwardSlow();
@@ -229,7 +228,7 @@ public class AutoTest extends LinearOpMode {
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
             while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
-                strafeLeft(.3,targOrient);
+                strafeLeft(mat,.3, targOrient);
             }
             stopDriving();
         }
@@ -249,7 +248,7 @@ public class AutoTest extends LinearOpMode {
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
             while (runtime.milliseconds() < lastTime + 1000) {
-                strafeLeft(.3, targOrient);
+                strafeLeft(mat, .3, targOrient);
             }
             stopDriving();
             driveForwardSlow();
@@ -283,7 +282,7 @@ public class AutoTest extends LinearOpMode {
 
 
             while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
-                strafeRight(.3, targOrient);
+                strafeRight(mat,.3, targOrient);
                 telemetry.addData("Red  ", robot.colorSensorDown.red());
                 telemetry.update();
             }
@@ -351,7 +350,7 @@ public class AutoTest extends LinearOpMode {
     }
 
     //Maintain a target heading (not used in the code)
-    double maintainHeading(Orientation target, double pwr){
+    double maintainHeading(Orientation target, double pwr) {
         //get the current heading
         Orientation currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -362,14 +361,14 @@ public class AutoTest extends LinearOpMode {
         //scale the error to the target value, and scale it by pwr so that it
         //doesn't overpower the movement
         //this may need to be adjusted positive or negative
-        double error  = (targAngle-currAngle) / 180 * pwr;
+        double error = (targAngle - currAngle) / 180 * pwr;
 
         //return that value so that it can be used to adjust the power
         return error;
     }
 
     //Strafe Left - (used to strafe towards the center line for parking)
-    void strafeLeft(double pwr, Orientation target) {  //added int pwr to reduce initial power
+    void strafeLeft(int side, double pwr, Orientation target) {  //added int pwr to reduce initial power
         //Get the current orientation
         Orientation currOrient;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -405,9 +404,11 @@ public class AutoTest extends LinearOpMode {
         telemetry.addData("r:>", r);
         telemetry.update();
 */
-double d; // Front distance correction
- d = -(FRONTDIST - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
-
+        double d; // Front distance correction
+        d = -(FRONTDIST - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
+        if (side == mat) {
+            d = 0;
+        }
         // Normalize the values so none exceeds +/- 1.0
         frontLeft = pwr + r + d;
         backLeft = -pwr + r + d;
@@ -429,7 +430,7 @@ double d; // Front distance correction
 
     }
 
-    void strafeRight(double pwr, Orientation target) {  //added int pwr to reduce initial power
+    void strafeRight(int side, double pwr, Orientation target) {  //added int pwr to reduce initial power
         //Get the current orientation
         Orientation currOrient;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -466,6 +467,9 @@ double d; // Front distance correction
 */
         double d; // Front distance correction
         d = -(FRONTDIST - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
+        if (side == mat) {
+            d = 0;
+        }
         // Normalize the values so none exceeds +/- 1.0
         frontLeft = -pwr + r + d;
         backLeft = pwr + r + d;
@@ -548,7 +552,7 @@ double d; // Front distance correction
         stopDriving();
         sleep(500);
         telemetry.update();
-        int lalpha ;
+        int lalpha;
         int ralpha;
         boolean bothYellow = true;
         int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
@@ -570,9 +574,9 @@ double d; // Front distance correction
         while ((bothYellow == true) && opModeIsActive()) {
 
             if (color == red) {
-                strafeRight(STRAFE_SPEED, targOrient);
+                strafeRight(stones,STRAFE_SPEED, targOrient);
             } else if (color == blue) {
-                strafeLeft(STRAFE_SPEED, targOrient);
+                strafeLeft(stones,STRAFE_SPEED, targOrient);
             }
 
             int skyStoneThreshold = 70;
