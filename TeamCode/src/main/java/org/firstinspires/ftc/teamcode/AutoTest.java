@@ -1,3 +1,6 @@
+// FTC Team 7080 BACON
+// Autonomous code for red & blue side, Stone & Mat side
+
 package org.firstinspires.ftc.teamcode;
 
 import android.app.Activity;
@@ -34,13 +37,14 @@ public class AutoTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     HardwareBACONbot robot = new HardwareBACONbot();   // Use BACONbot's hardware
     // === DEFINE CONSTANTS HERE! ===
-    double STRAFE_SPEED = 0.2;
+    double STRAFE_SPEED = 0.3;  // Motor power global variables
     double FAST_SPEED = 1.0;
     double SLOW_SPEED = 0.2;
     int BLUETAPE = 22; // Blue tape down sensor color value
     int REDTAPE = 30; // Red tape down sensor color value
     int blue = 1;
     int red = 0;
+    int FRONTDIST = 160;
 
     // ==============================
     public void runOpMode() {
@@ -127,7 +131,6 @@ public class AutoTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
 
-
         //Stones --------------------------------------------------------------------------++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         //First troubleshooting steps for this section would be to check the direction of the strafes in scan and grab
         if ((task == stones) && (teamcolor == red)) {
@@ -180,8 +183,6 @@ public class AutoTest extends LinearOpMode {
         if ((task == mat) && (teamcolor == blue)) {
             robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
             robot.blinkinLedDriver.setPattern(robot.pattern);
-
-
             driveForwardSlow();
             while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
             {
@@ -194,6 +195,9 @@ public class AutoTest extends LinearOpMode {
             while (runtime.milliseconds() < lastTime + 1000) {
                 strafeRight(.3, targOrient);
             }
+            stopDriving();
+            driveForwardSlow();
+            sleep(250);
             stopDriving();
 
             //servos down
@@ -225,7 +229,7 @@ public class AutoTest extends LinearOpMode {
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
             while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
-
+                strafeLeft(.3,targOrient);
             }
             stopDriving();
         }
@@ -247,6 +251,9 @@ public class AutoTest extends LinearOpMode {
             while (runtime.milliseconds() < lastTime + 1000) {
                 strafeLeft(.3, targOrient);
             }
+            stopDriving();
+            driveForwardSlow();
+            sleep(250);
             stopDriving();
 
             //servos down
@@ -273,6 +280,7 @@ public class AutoTest extends LinearOpMode {
             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
             targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
 
             while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
                 strafeRight(.3, targOrient);
@@ -370,12 +378,17 @@ public class AutoTest extends LinearOpMode {
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
         double targAng = 0.0;  // target.angleUnit.DEGREES.normalize(target.firstAngle);
         double error = targAng - currAng;
-
+        double frontLeft;
+        double frontRight;
+        double backLeft;
+        double backRight;
+        double max;
         //scale the error so that it is a motor value and
         //then scale it by a third of the power to make sure it
         //doesn't dominate the movement
-        double r = -error / 180 * (pwr * 0.3);
+        double r = -error / 180 * (pwr * 10);
 
+        /*
         //if the absolute value of r is less than
         //.07, the motors won't do anything, so if
         //it is less than .07, make it .07
@@ -384,18 +397,35 @@ public class AutoTest extends LinearOpMode {
         } else if ((r > -.07) && (r < 0)) {
             r = -.07;
         }
+        */
+
 /*
         telemetry.addData("pwr:>", pwr);
         telemetry.addData("error:>", r);
         telemetry.addData("r:>", r);
         telemetry.update();
 */
+double d; // Front distance correction
+ d = -(FRONTDIST - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
+
+        // Normalize the values so none exceeds +/- 1.0
+        frontLeft = pwr + r + d;
+        backLeft = -pwr + r + d;
+        backRight = -pwr + r - d;
+        frontRight = pwr + r - d;
+        max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
+        if (max > 1.0) {
+            frontLeft = frontLeft / max;
+            frontRight = frontRight / max;
+            backLeft = backLeft / max;
+            backRight = backRight / max;
+        }
 
         //send the power to the motors
-        robot.frontLeftMotor.setPower(pwr + r);
-        robot.backLeftMotor.setPower(-pwr + r); //Changing the order in which the wheels start
-        robot.backRightMotor.setPower(-pwr + r);
-        robot.frontRightMotor.setPower(pwr + r);
+        robot.frontLeftMotor.setPower(frontLeft);
+        robot.backLeftMotor.setPower(backLeft); //Changing the order in which the wheels start
+        robot.backRightMotor.setPower(backRight);
+        robot.frontRightMotor.setPower(frontRight);
 
     }
 
@@ -408,32 +438,52 @@ public class AutoTest extends LinearOpMode {
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
         double targAng = 0.0;  // target.angleUnit.DEGREES.normalize(target.firstAngle);
         double error = targAng - currAng;
-
+        double frontLeft;
+        double frontRight;
+        double backLeft;
+        double backRight;
+        double max;
         //scale the error so that it is a motor value and
         //then scale it by a third of the power to make sure it
         //doesn't dominate the movement
-        double r = -error / 180 * (pwr * 0.3);
+        double r = -error / 180 * (pwr * 10);
 
         //if the absolute value of r is less than
         //.07, the motors won't do anything, so if
         //it is less than .07, make it .07
+        /*
         if ((r < .07) && (r > 0)) {
             r = .07;
         } else if ((r > -.07) && (r < 0)) {
             r = -.07;
         }
+        */
 /*
         telemetry.addData("pwr:>", pwr);
         telemetry.addData("error:>", r);
         telemetry.addData("r:>", r);
         telemetry.update();
 */
+        double d; // Front distance correction
+        d = -(FRONTDIST - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
+        // Normalize the values so none exceeds +/- 1.0
+        frontLeft = -pwr + r + d;
+        backLeft = pwr + r + d;
+        backRight = pwr + r - d;
+        frontRight = -pwr + r - d;
+        max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
+        if (max > 1.0) {
+            frontLeft = frontLeft / max;
+            frontRight = frontRight / max;
+            backLeft = backLeft / max;
+            backRight = backRight / max;
+        }
 
         //send the power to the motors
-        robot.frontLeftMotor.setPower(-pwr + r);
-        robot.backLeftMotor.setPower(pwr + r); //Changing the order in which the wheels start
-        robot.backRightMotor.setPower(pwr + r);
-        robot.frontRightMotor.setPower(-pwr + r);
+        robot.frontLeftMotor.setPower(frontLeft);
+        robot.backLeftMotor.setPower(backLeft); //Changing the order in which the wheels start
+        robot.backRightMotor.setPower(backRight);
+        robot.frontRightMotor.setPower(frontRight);
     }
 
 
@@ -549,7 +599,7 @@ public class AutoTest extends LinearOpMode {
             end correct heading part 1  */
             // If it's black then bothYellow is false
             if ((lalpha < skyStoneThreshold) && (ralpha < skyStoneThreshold)) {
-                sleep(300); //keep strafing
+                //sleep(75); //keep strafing
                 /*  part 2 -- tried to correct heading
                 if (cHeading > 0.0) {//line up
                     rotateR(0.0, .3);
@@ -601,7 +651,7 @@ public class AutoTest extends LinearOpMode {
     void positionRobot() {
         driveForwardSlow();
         //TODO: Get a more accurate distance
-        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > 160) && opModeIsActive()) {
+        while ((robot.frontDistance.getDistance(DistanceUnit.MM) > FRONTDIST) && opModeIsActive()) {
             telemetry.addData("positionRobot  dist(mm): ", robot.frontDistance.getDistance(DistanceUnit.MM));
             telemetry.update();
         }
@@ -624,9 +674,12 @@ public class AutoTest extends LinearOpMode {
     void grabStone() {
         stopDriving();
         driveForwardSlow();
+        /*
         while ((robot.backDistance.getDistance(DistanceUnit.MM) < 700) && opModeIsActive()) {
             sleep(10);
         }
+        */
+        sleep(1500);
         telemetry.addData("I stop", "I have entered the Grab Phase");
         telemetry.update();
         lowerClaw();
@@ -635,9 +688,12 @@ public class AutoTest extends LinearOpMode {
         sleep(500);
 
         driveBackwardsSlow();
+        /*
         while ((robot.backDistance.getDistance(DistanceUnit.MM) > 700) && opModeIsActive()) {
             sleep(10);
         }
+        */
+        sleep(1500);
         stopDriving();
 
     }
