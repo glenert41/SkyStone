@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class ShieldsMecanum extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    HardwareShieldsMecanum robot = new HardwareShieldsMecanum();   // Use a BACONbot's hardware
+    HardwareShieldsMecanum robot = new HardwareShieldsMecanum();
 
     @Override
     public void runOpMode() {
