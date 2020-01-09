@@ -342,16 +342,43 @@ public class AutoTest extends LinearOpMode {
         robot.frontRightMotor.setPower(-1 * SLOW_SPEED);
     }
 
+    //Maintain a target heading (not used in the code)
+    double maintainHeading(Orientation target, double pwr){
+        //get the current heading
+        Orientation currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        //compare the current angle to the target angle
+        double currAngle = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
+        double targAngle = target.angleUnit.DEGREES.normalize(target.firstAngle);
+
+        //scale the error to the target value, and scale it by pwr so that it
+        //doesn't overpower the movement
+        //this may need to be adjusted positive or negative
+        double error  = (targAngle-currAngle) / 180 * pwr;
+
+        //return that value so that it can be used to adjust the power
+        return error;
+    }
+
     //Strafe Left - (used to strafe towards the center line for parking)
     void strafeLeft(double pwr, Orientation target) {  //added int pwr to reduce initial power
+        //Get the current orientation
         Orientation currOrient;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        //Compare the current orientation to the target
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
         double targAng = 0.0;  // target.angleUnit.DEGREES.normalize(target.firstAngle);
         double error = targAng - currAng;
 
+        //scale the error so that it is a motor value and
+        //then scale it by a third of the power to make sure it
+        //doesn't dominate the movement
         double r = -error / 180 * (pwr * 0.3);
 
+        //if the absolute value of r is less than
+        //.07, the motors won't do anything, so if
+        //it is less than .07, make it .07
         if ((r < .07) && (r > 0)) {
             r = .07;
         } else if ((r > -.07) && (r < 0)) {
@@ -363,6 +390,8 @@ public class AutoTest extends LinearOpMode {
         telemetry.addData("r:>", r);
         telemetry.update();
 */
+
+        //send the power to the motors
         robot.frontLeftMotor.setPower(pwr + r);
         robot.backLeftMotor.setPower(-pwr + r); //Changing the order in which the wheels start
         robot.backRightMotor.setPower(-pwr + r);
@@ -371,24 +400,36 @@ public class AutoTest extends LinearOpMode {
     }
 
     void strafeRight(double pwr, Orientation target) {  //added int pwr to reduce initial power
+        //Get the current orientation
         Orientation currOrient;
         currOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        //Compare the current orientation to the target
         double currAng = currOrient.angleUnit.DEGREES.normalize(currOrient.firstAngle);
-        double targAng = 0.0;   // old stuff  target.angleUnit.DEGREES.normalize(target.firstAngle);
+        double targAng = 0.0;  // target.angleUnit.DEGREES.normalize(target.firstAngle);
         double error = targAng - currAng;
+
+        //scale the error so that it is a motor value and
+        //then scale it by a third of the power to make sure it
+        //doesn't dominate the movement
         double r = -error / 180 * (pwr * 0.3);
 
+        //if the absolute value of r is less than
+        //.07, the motors won't do anything, so if
+        //it is less than .07, make it .07
         if ((r < .07) && (r > 0)) {
             r = .07;
         } else if ((r > -.07) && (r < 0)) {
             r = -.07;
         }
-
-       /* telemetry.addData("pwr:>", pwr);
+/*
+        telemetry.addData("pwr:>", pwr);
         telemetry.addData("error:>", r);
         telemetry.addData("r:>", r);
-        telemetry.update();*/
+        telemetry.update();
+*/
 
+        //send the power to the motors
         robot.frontLeftMotor.setPower(-pwr + r);
         robot.backLeftMotor.setPower(pwr + r); //Changing the order in which the wheels start
         robot.backRightMotor.setPower(pwr + r);
