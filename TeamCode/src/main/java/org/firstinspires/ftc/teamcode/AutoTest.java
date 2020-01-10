@@ -146,7 +146,7 @@ public class AutoTest extends LinearOpMode {
             //Pick up the Skystone
             grabStone();
             //rotate to face mat side
-            rotateR(-85.0, 0.3);
+            rotateR(-80.0, 0.3); //heading was at 85
             //Park on the tape
             parkStonesRed();
             //go drop the stone in the build zone and return to the parking line
@@ -168,7 +168,7 @@ public class AutoTest extends LinearOpMode {
             //Pick up the Skystone
             grabStone();
             //rotate to face mat side
-            rotateL(85.0, 0.3);
+            rotateL(80.0, 0.3); //heading was at 85
             //Park on the tape
             parkStonesBlue();
             //go drop the stone in the build zone and return to the parking line
@@ -579,7 +579,15 @@ public class AutoTest extends LinearOpMode {
                 strafeLeft(stones,STRAFE_SPEED, targOrient);
             }
 
-            int skyStoneThreshold = 70;
+            int skyStoneThresholdRed = 70;
+            int skyStoneThresholdBlue = skyStoneThresholdRed;
+            int skyStoneThreshold;
+            if(color == red){
+                skyStoneThreshold = skyStoneThresholdRed;
+            }
+            else{
+                skyStoneThreshold = skyStoneThresholdBlue;
+            }
             ralpha = robot.colorSensorR.alpha();
             lalpha = robot.colorSensorL.alpha();
             if ((lalpha > skyStoneThreshold) && (ralpha > skyStoneThreshold)) {
@@ -603,7 +611,7 @@ public class AutoTest extends LinearOpMode {
             end correct heading part 1  */
             // If it's black then bothYellow is false
             if ((lalpha < skyStoneThreshold) && (ralpha < skyStoneThreshold)) {
-                //sleep(75); //keep strafing
+                sleep(200); //keep strafing
                 /*  part 2 -- tried to correct heading
                 if (cHeading > 0.0) {//line up
                     rotateR(0.0, .3);

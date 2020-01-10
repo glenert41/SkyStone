@@ -182,14 +182,6 @@ public class BACONbotMechanum extends LinearOpMode {
                 frontRight = -frontRight;
                 backRight = -backRight;
 
-                // Normalize the values so none exceeds +/- 1.0
-                max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
-                if (max > 1.0) {
-                    frontLeft = frontLeft / max;
-                    frontRight = frontRight / max;
-                    backLeft = backLeft / max;
-                    backRight = backRight / max;
-                }
 
                 // Set power on each wheel
                 robot.frontLeftMotor.setPower(frontLeft / fastSlow);
