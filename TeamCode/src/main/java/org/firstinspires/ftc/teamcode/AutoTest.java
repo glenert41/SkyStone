@@ -405,7 +405,7 @@ public class AutoTest extends LinearOpMode {
         telemetry.update();
 */
         double d; // Front distance correction
-        d = -(FRONTDIST - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
+        d = -(FRONTDIST - 30 - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
         if (side == mat) {
             d = 0;
         }
@@ -466,7 +466,7 @@ public class AutoTest extends LinearOpMode {
         telemetry.update();
 */
         double d; // Front distance correction
-        d = -(FRONTDIST - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
+        d = -(FRONTDIST - 30 - robot.frontDistance.getDistance(DistanceUnit.MM)) / 200;
         if (side == mat) {
             d = 0;
         }
@@ -611,7 +611,7 @@ public class AutoTest extends LinearOpMode {
             end correct heading part 1  */
             // If it's black then bothYellow is false
             if ((lalpha < skyStoneThreshold) && (ralpha < skyStoneThreshold)) {
-                sleep(200); //keep strafing
+                sleep(100); //keep strafing
                 /*  part 2 -- tried to correct heading
                 if (cHeading > 0.0) {//line up
                     rotateR(0.0, .3);
@@ -644,7 +644,7 @@ public class AutoTest extends LinearOpMode {
 
     void raiseClaw() {
         robot.liftMotor.setPower(-1);
-        while ((robot.liftMotor.getCurrentPosition() > -2500) && opModeIsActive()) {
+        while ((robot.liftMotor.getCurrentPosition() > -1500) && opModeIsActive()) {
             telemetry.addData("raiseClaw pos: ", robot.liftMotor.getCurrentPosition());
             telemetry.update();
         }

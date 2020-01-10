@@ -33,6 +33,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -45,6 +46,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // - refine movement with gyros
 // =================================
 @Autonomous(name = "Shields and Arleth: Autonomous", group = "Shields")
+@Disabled
 
 public class ShieldsAutonomous extends LinearOpMode {
 
@@ -56,7 +58,7 @@ public class ShieldsAutonomous extends LinearOpMode {
     int headingError = 0;
     double rScale = 0.5;
     @Override
-    //@Disable
+
     public void runOpMode() throws InterruptedException {
         // Initialize the hardware variables.
         // The init() method of the hardware class does all the work here
