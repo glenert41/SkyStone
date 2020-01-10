@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.HardwareBACONbot;
 
 
 @Autonomous(name = "BACON: OLD Autonomous 19-20", group = "Opmode")
-//@Disabled
+@Disabled
 
 //name file AutonomousB
 public class Auto extends LinearOpMode {

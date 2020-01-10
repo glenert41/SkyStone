@@ -29,7 +29,7 @@ import java.util.Locale;
 //import org.firstinspires.ftc.teamcode.Teleops.HardwareMap;
 
 
-@Autonomous(name = "BACON: Test Autonomous 19-20", group = "Opmode")
+@Autonomous(name = "BACON: Autonomous 2020", group = "Opmode")
 //@Disabled
 
 //name file AutonomousB
