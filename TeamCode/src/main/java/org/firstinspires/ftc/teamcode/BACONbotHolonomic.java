@@ -49,7 +49,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name = "BACONbot: Holonomic", group = "BACONbot")
-@Disabled
 public class BACONbotHolonomic extends LinearOpMode {
 
     /* Declare OpMode members. */
