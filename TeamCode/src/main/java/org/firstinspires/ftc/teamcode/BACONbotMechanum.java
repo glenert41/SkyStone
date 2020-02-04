@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.robocol.Heartbeat;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -52,6 +53,9 @@ public class BACONbotMechanum extends LinearOpMode {
     int MOVINGUP = 2;
     int MOVINGDOWN = 3;
     int liftState = STOPPED;
+    int ON = 1;
+    int OFF = 2;
+    int wheelServoState = OFF;
 
     @Override
     public void runOpMode() {
@@ -268,6 +272,9 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.matServoR.setPosition(freePos);
             }
 
+
+
+
             /*
             if(gamepad1.x){
                 currrentPos = grabPos
@@ -324,7 +331,25 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-
+int dpad2 = OFF; //dpad2 is off
+          //  if (gamepad2.dpad_down){
+            //    if(dpad2 == OFF ){
+                   // robot.wheelServoL.setPower(1.0);
+                   // robot.wheelServoR.setDirection(DcMotorSimple.Direction.REVERSE);
+                   // robot.wheelServoR.setPower(1.0);
+                   // wheelServoState = ON;
+           /****     }
+                dpad2 = ON;
+            }
+            if (!gamepad2.dpad_down) {
+                if(dpad2 == ON){
+                    robot.wheelServoL.setPower(0.0);
+                    robot.wheelServoR.setPower(0.0);
+                    wheelServoState = OFF;
+                }
+                dpad2 = OFF;
+            }
+****/
             /*
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
             telemetry.addData("Right Snesor", "Alpha:" + robot.colorSensorR.alpha());
