@@ -56,6 +56,7 @@ public class BACONbotMechanum extends LinearOpMode {
     int ON = 1;
     int OFF = 2;
     int wheelServoState = OFF;
+    int dpad2 = OFF; //dpad2 is off
 
     @Override
     public void runOpMode() {
@@ -331,25 +332,26 @@ public class BACONbotMechanum extends LinearOpMode {
                 robot.liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-int dpad2 = OFF; //dpad2 is off
-          //  if (gamepad2.dpad_down){
-            //    if(dpad2 == OFF ){
-                   // robot.wheelServoL.setPower(1.0);
-                   // robot.wheelServoR.setDirection(DcMotorSimple.Direction.REVERSE);
-                   // robot.wheelServoR.setPower(1.0);
-                   // wheelServoState = ON;
-           /****     }
+
+            if (gamepad2.dpad_down && (dpad2 == OFF)) {
+                if (wheelServoState == OFF) {
+                    robot.wheelServoL.setPosition(1.0);
+                    // robot.wheelServoR.setDirection(DcMotorSimple.Direction.REVERSE);
+                    robot.wheelServoR.setPosition(0.0);
+                    wheelServoState = ON;
+
+                } else if (wheelServoState == ON) {
+                    robot.wheelServoL.setPosition(0.48);
+                    robot.wheelServoR.setPosition(0.49);
+                    wheelServoState = OFF;
+
+                }
                 dpad2 = ON;
             }
             if (!gamepad2.dpad_down) {
-                if(dpad2 == ON){
-                    robot.wheelServoL.setPower(0.0);
-                    robot.wheelServoR.setPower(0.0);
-                    wheelServoState = OFF;
-                }
                 dpad2 = OFF;
             }
-****/
+
             /*
             telemetry.addData("Left Sensor","Alpha:" + robot.colorSensorL.alpha());
             telemetry.addData("Right Snesor", "Alpha:" + robot.colorSensorR.alpha());
