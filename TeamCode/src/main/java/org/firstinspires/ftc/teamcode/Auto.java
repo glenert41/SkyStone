@@ -50,6 +50,9 @@ public class Auto extends LinearOpMode {
     int red = 0;
     int mat = 1;
     int stones = 2;
+    int parallel = 1;
+    int perpendicular = 2;
+    int matPosition;
     int FRONTDIST = 160;
 
 
