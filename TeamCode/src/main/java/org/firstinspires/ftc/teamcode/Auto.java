@@ -208,7 +208,7 @@ public class Auto extends LinearOpMode {
         }
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        //BLUE TEAM MAT
+        //TODO: BLUE TEAM MAT
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //BLUE TEAM MAT
         if ((task == mat) && (teamcolor == blue) && (matPosition==parallel)) {
@@ -277,16 +277,15 @@ public class Auto extends LinearOpMode {
 
             driveBackwardsSlow();
 
-            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 100) && opModeIsActive()) //drivetomat
+            while ((robot.backDistance.getDistance(DistanceUnit.MM) > 600) && opModeIsActive()) //drivetomat
             {
                 telemetry.addData("backing up", "Back Distance: " + robot.backDistance.getDistance(DistanceUnit.MM));
                 telemetry.update();
             }
             stopDriving();
-
+            matRotateR();
             releaseMat();
 
-            //rotateR(-10.0, 0.3);
 
             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
