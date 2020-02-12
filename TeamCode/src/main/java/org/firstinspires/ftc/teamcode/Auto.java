@@ -127,6 +127,20 @@ public class Auto extends LinearOpMode {
         telemetry.addData("task ", task);
         telemetry.update();
 
+        //Choosing the mat orientation
+        telemetry.addData("Press left bumper for parallel mat position, right bumper for perpendicular mat position", "");
+        telemetry.update();
+        while (!gamepad1.left_bumper && !gamepad1.right_bumper) {
+        }
+        if (gamepad1.left_bumper) {
+            matPosition = parallel;
+        }
+        if (gamepad1.right_bumper) {
+            matPosition=perpendicular;
+        }
+        telemetry.addData("Mat Position ", matPosition);
+        telemetry.update();
+
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) robot.backDistance;
 
         //mat servos up
@@ -428,10 +442,10 @@ public class Auto extends LinearOpMode {
             d = 0;
         }
         // Normalize the values so none exceeds +/- 1.0
-        frontLeft = pwr + r + d;
-        backLeft = -pwr + r + d;
-        backRight = -pwr + r - d;
-        frontRight = pwr + r - d;
+        frontLeft = -pwr + r + d;
+        backLeft = pwr + r + d;
+        backRight = pwr + r - d;
+        frontRight = -pwr + r - d;
         max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
         if (max > 1.0) {
             frontLeft = frontLeft / max;
@@ -489,10 +503,10 @@ public class Auto extends LinearOpMode {
             d = 0;
         }
         // Normalize the values so none exceeds +/- 1.0
-        frontLeft = -pwr + r + d;
-        backLeft = pwr + r + d;
-        backRight = pwr + r - d;
-        frontRight = -pwr + r - d;
+        frontLeft = pwr + r + d;
+        backLeft = -pwr + r + d;
+        backRight = -pwr + r - d;
+        frontRight = pwr + r - d;
         max = Math.max(Math.max(Math.abs(frontLeft), Math.abs(frontRight)), Math.max(Math.abs(frontRight), Math.abs(frontRight)));
         if (max > 1.0) {
             frontLeft = frontLeft / max;
