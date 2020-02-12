@@ -38,7 +38,8 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 //   - Check correct version of all strafes (strafe functions are now correct)
 //   - Figure out the claw raise/lower problem with timing in the park function
 //    (Mr. Dierolf said we can just do a sleep)(Wait until motor/encoder situation is figured out)
-//
+//   - figure out what in the world is going on with the down button on the controller
+//     (Why it's not in the mechanum code anymore
 
 @Autonomous(name = "BACON: Autonomous 2020", group = "Opmode")
 //@Disabled
