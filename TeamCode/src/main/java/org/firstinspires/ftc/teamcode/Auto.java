@@ -838,6 +838,103 @@ public class Auto extends LinearOpMode {
         robot.backRightMotor.setPower(speed);
 
     }
+    void initializeWhiteLight(){
+        robot.pattern = RevBlinkinLedDriver.BlinkinPattern.WHITE;
+        robot.blinkinLedDriver.setPattern(robot.pattern);
+    }
+
+    void positionRobotMatBlue(){
+        double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+        double lastTime = runtime.milliseconds();
+
+        while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
+        {
+            driveForwardSlow();
+        }
+        stopDriving();
+        lastTime = runtime.milliseconds();
+        //this actually makes it go left toward the center of the mat
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        while (runtime.milliseconds() < lastTime + 1000) {
+            strafeRight(mat, .3, targOrient);
+        }
+        stopDriving();
+        driveForwardSlow();
+        sleep(250);
+        stopDriving();
+    }
+
+    void positionRobotMatRed(){
+        double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
+        double lastTime = runtime.milliseconds();
+        driveForwardSlow();
+        while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
+        {
+        }
+        stopDriving();
+        lastTime = runtime.milliseconds();
+        //this actually makes it go right toward the center of the mat
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        while (runtime.milliseconds() < lastTime + 1000) {
+            strafeLeft(mat, .3, targOrient);
+        }
+        stopDriving();
+        driveForwardSlow();
+        sleep(250);
+        stopDriving();
+    }
+
+    void grabMat(){
+        float grabPos = 0;  //change these later (written 12-3-19)
+        float freePos = 1;  //change these later  (written 12-3-19)
+        //servos down
+        robot.matServoL.setPosition(grabPos);
+        robot.matServoR.setPosition(freePos);
+        sleep(1000); //We can edit this delay based on it we need more time or not
+    }
+
+    void releaseMat(){
+        float grabPos = 0;  //change these later (written 12-3-19)
+        float freePos = 1;  //change these later  (written 12-3-19)
+        //mat servos up
+        robot.matServoL.setPosition(freePos);
+        robot.matServoR.setPosition(grabPos);
+        sleep(1000); //this makes sure we don't knock the mat when we begin to go towards parking
+    }
+
+    void parkMatBlue(){
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
+            strafeLeft(mat,.3, targOrient);
+        }
+        stopDriving();
+    }
+    void parkMatRed(){
+        Orientation targOrient;
+        targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
+            strafeRight(mat,.3, targOrient);
+            telemetry.addData("Red  ", robot.colorSensorDown.red());
+            telemetry.update();
+        }
+        stopDriving();
+    }
+    void matRotateR(){
+        robot.frontLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(-0.3);
+        robot.backLeftMotor.setPower(0);
+        robot.backRightMotor.setPower(-0.3);
+    }
+    void matRotateL(){
+        robot.frontLeftMotor.setPower(-0.3);
+        robot.frontRightMotor.setPower(0);
+        robot.backLeftMotor.setPower(-0.3);
+        robot.backRightMotor.setPower(0);
+    }
 
     //----------------------------------------------------------------------------------------------
     // Formatting
