@@ -909,18 +909,34 @@ public class Auto extends LinearOpMode {
     }
 
     void parkMatBlue(){
+        double lastTime = runtime.milliseconds();
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastTime = runtime.milliseconds();
+        strafeRight(mat,.3, targOrient);
+        while(runtime.milliseconds() < lastTime + 1000){
+
+        }
+        stopDriving(); //We may be able to remove this
+        lowerClaw();
         while (robot.colorSensorDown.blue() < BLUETAPE && opModeIsActive()) {
-            strafeLeft(mat,.3, targOrient);
+            strafeRight(mat,.3, targOrient);
         }
         stopDriving();
     }
     void parkMatRed(){
+        double lastTime = runtime.milliseconds();
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastTime = runtime.milliseconds();
+        strafeLeft(mat,.3, targOrient);
+        while(runtime.milliseconds() < lastTime + 1000){
+
+        }
+        stopDriving(); //We may be able to remove this
+        lowerClaw();
         while (robot.colorSensorDown.red() < REDTAPE && opModeIsActive()) {
-            strafeRight(mat,.3, targOrient);
+            strafeLeft(mat,.3, targOrient);
             telemetry.addData("Red  ", robot.colorSensorDown.red());
             telemetry.update();
         }
