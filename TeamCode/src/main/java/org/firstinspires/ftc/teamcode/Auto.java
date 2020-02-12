@@ -286,7 +286,7 @@ public class Auto extends LinearOpMode {
 
             releaseMat();
 
-            rotateR(-10.0, 0.3);
+            //rotateR(-10.0, 0.3);
 
             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
@@ -316,7 +316,7 @@ public class Auto extends LinearOpMode {
 
             releaseMat();
 
-            rotateR(-10.0, 0.3);
+            //rotateL(-10.0, 0.3);
 
             //Actually left towards the skybridge
             //Senses the BLUE tape under the skybridge and tells the robot to stop
@@ -871,7 +871,7 @@ public class Auto extends LinearOpMode {
     void positionRobotMatBlue(){
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double lastTime = runtime.milliseconds();
-
+        //raiseClaw();
         while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
         {
             driveForwardSlow();
@@ -882,7 +882,7 @@ public class Auto extends LinearOpMode {
         Orientation targOrient;
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         while (runtime.milliseconds() < lastTime + 1000) {
-            strafeRight(mat, .3, targOrient);
+            strafeLeft(mat, .3, targOrient);
         }
         stopDriving();
         driveForwardSlow();
@@ -893,7 +893,7 @@ public class Auto extends LinearOpMode {
     void positionRobotMatRed(){
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double lastTime = runtime.milliseconds();
-        raiseClaw();
+        //raiseClaw();
 
         while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
         {
@@ -906,7 +906,7 @@ public class Auto extends LinearOpMode {
         targOrient = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         while (runtime.milliseconds() < lastTime + 1000) {
-            strafeLeft(mat, .3, targOrient);
+            strafeRight(mat, .3, targOrient);
         }
         stopDriving();
         driveForwardSlow();
