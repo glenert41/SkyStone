@@ -32,6 +32,13 @@ import java.util.Locale;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 //import org.firstinspires.ftc.teamcode.Teleops.HardwareMap;
 
+//TODO: Important things to do in the mat position auto code
+//   - Check where driveForward() and strafeLeft/Right() are in relation to while loop
+//   - Compare to MatPositionTesting branch (that branch is done now)
+//   - Check correct version of all strafes (strafe functions are now correct)
+//   - Figure out the claw raise/lower problem with timing in the park function
+//    (Mr. Dierolf said we can just do a sleep)(Wait until motor/encoder situation is figured out)
+//
 
 @Autonomous(name = "BACON: Autonomous 2020", group = "Opmode")
 //@Disabled
@@ -885,9 +892,11 @@ public class Auto extends LinearOpMode {
     void positionRobotMatRed(){
         double meetDistance = 860; //Distance from wall to the Blocks/Mat (CM From Wall (BackSensor))
         double lastTime = runtime.milliseconds();
-        driveForwardSlow();
+        raiseClaw();
+
         while ((robot.backDistance.getDistance(DistanceUnit.MM) < meetDistance) && opModeIsActive()) //drive to mat
         {
+            driveForwardSlow();
         }
         stopDriving();
         lastTime = runtime.milliseconds();
